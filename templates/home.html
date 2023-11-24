@@ -6,7 +6,7 @@
   <title>Movie Recommender</title>
 
 <link rel = "stylesheet" href="static/stylesheets/style.css">
-  
+<script src="{{url_for('static', filename='search.js')}}"></script>
 </head>
 <body>
 <h1>MOVIE RECOMMENDER</h1>
@@ -14,6 +14,11 @@
 <div class="body">
 HERE IT IS
 
-</div>
+
+{{x}}
+
+{%for response in list_of_movies%}
+{{response}}
+{%endfor%}
 </body>
 </html>
