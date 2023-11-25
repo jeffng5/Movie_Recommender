@@ -8,3 +8,67 @@ h1 {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-style: oblique;
 }
+
+div {
+    color: whitesmoke;
+    /* box-sizing: border-box; */
+  }
+  
+  /* :focus {
+   /* TODO }*/
+  
+  
+  body {
+    background: linear-gradient(to right, forestgreen , teal, aqua);
+  }
+  
+  input#fruit {
+    color: white;
+    font-size: medium;
+  }
+  
+  .search-container {
+    color: whitesmoke;
+    
+  }
+  .search-container input,
+  .search-container .suggestions {
+    font-size: small;
+    color: whitesmoke;
+    position :relative;
+    top: 350px;
+    left: 500px;
+    
+    
+  }
+  .search-container input {
+    background: linear-gradient(to right, forestgreen , teal, aqua);
+    color: white;
+    font-size: medium;
+  }
+  /* .search-container .suggestions {
+  
+  } */
+  
+  option {
+    background-color: darkcyan;
+    color: whitesmoke;
+  }
+  #fruit {
+    color: whitesmoke;
+  }
+ 
+  
+  input[placeholder]{
+     color:whitesmoke;
+  }
+  
+  button {
+    position: absolute;
+    bottom: 85px;
+    left: 200px;
+    border-radius : 8px;
+    padding: 10px;
+    background-color: blue;
+    color: whitesmoke;
+  }

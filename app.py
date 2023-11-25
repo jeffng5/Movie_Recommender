@@ -26,14 +26,11 @@ connect_db(app)
 
 @app.route('/')
 def home():
-    df = pd.read_json('~/IMDB_IDs/IMDB.json')
     url= 'http://www.omdbapi.com/?&i='
-    movies = df.movies
-    print(len(movies))
     list_of_movies=[]
-    for x in movies[0:1]:
+    for x in cleaned_movies_titles:
         try:
-            resp = requests.get('http://www.omdbapi.com/?apikey=1288b79b&?i={}'.format(x))
+            resp = requests.get('http://www.omdbapi.com/?apikey=1288b79b&?t={}'.format(x))
             print(resp.text)
             list_of_movies.append(resp.text)
         except:
