@@ -1,22 +1,42 @@
+body{
+  background-color: slategrey;
+}
 h1 {
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: goldenrod;
+    font-family: Verdana, sans-serif;
     font-style: oblique;
 }
 
-div {
-    color: grey;
-    /* box-sizing: border-box; */
+h3 {
+    color: goldenrod;
+    font-family: Verdana, sans-serif;
+    font-style: oblique;
+ 
+  }
+ 
+button#searchbar {
+    font-family: Verdana, sans-serif;
+    font-style: oblique;
+    left: 150px;
+    border-radius : 8px;
+    padding: 10px;
+    background-color: goldenrod;
+    color: whitesmoke;
+  
+  }
+
+button#catalog {
+    font-family: Verdana, sans-serif;
+    position: absolute;
+    bottom: 95px;
+    font-style: oblique;
+    border-radius : 8px;
+    padding: 10px;
+    color: whitesmoke;
+    background-color: goldenrod;
   }
   
-  /* :focus {
-   /* TODO }*/
-  
-  
-  body {
-    color: rgb(245, 178, 8);
-    background: rgb(23, 23, 23)}
-  
-  input#fruit {
+  /* input#fruit {
     color: white;
     font-size: medium;
   }
@@ -42,7 +62,7 @@ div {
   }
   /* .search-container .suggestions {
   
-  } */
+  } 
   
   option {
     background-color: darkcyan;
@@ -56,12 +76,4 @@ div {
   input[placeholder]{
      color:whitesmoke;
   }
-  
-  button {
-    position: absolute;
-    bottom: 585px;
-    border-radius : 8px;
-    padding: 10px;
-    background-color:orange;
-    color: whitesmoke;
-  }
+ */
