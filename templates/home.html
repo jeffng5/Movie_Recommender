@@ -4,20 +4,19 @@
 <head>
   <meta charset="UTF-8">
   <title>Movie Recommender</title>
-<script  src="./script.js"></script>
-<link rel = "stylesheet" href="static/stylesheets/style.css">
+<script  src="static/script.js"></script>
+<link rel = "stylesheet" href="static/style.css">
 </head>
 <body>
-<h1>MOVIE RECOMMENDER</h1>
+<h1>MOVIE GEEKS DB</h1>
 
 <div class="body">
-HERE IT IS
-
-
-{{x}}
-
-{%for response in list_of_movies%}
-{{response}}
-{%endfor%}
+Do you already have a movie in mind? Please search through our 15,000 movie database
+<form action="/search">
+<button>Search db for my movie</button>
+</form>
+<form action="/catalog">
+<button>NO, I would like to browse your catalog!</button>
+</form>
 </body>
 </html>

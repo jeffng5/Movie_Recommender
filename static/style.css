@@ -4,7 +4,7 @@ h1 {
 }
 
 div {
-    color: whitesmoke;
+    color: grey;
     /* box-sizing: border-box; */
   }
   
@@ -13,7 +13,7 @@ div {
   
   
   body {
-    color: gold;
+    color: rgb(245, 178, 8);
     background: rgb(23, 23, 23)}
   
   input#fruit {
@@ -59,10 +59,9 @@ div {
   
   button {
     position: absolute;
-    bottom: 85px;
-    left: 200px;
+    bottom: 585px;
     border-radius : 8px;
     padding: 10px;
-    background-color: blue;
+    background-color:orange;
     color: whitesmoke;
   }
