@@ -55,6 +55,9 @@ class Favorite(db.Model):
     movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'), nullable=False)
     title= db.Column(db.String, db.ForeignKey('movies.title'), nullable=False)
 
+    favorite = db.relationship('Movie', backref= 'favorites')
+    favorited_user = db.relationship('User', backref= 'favorites')
+
 class Watched(db.Model):
 
     __tablename__= 'watcheds'
@@ -62,3 +65,6 @@ class Watched(db.Model):
     user_id= db.Column(db.Integer, db.ForeignKey('users.id'),nullable=False)
     movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'), nullable=False)
     title=db.Column(db.String, db.ForeignKey('movies.title'), nullable=False)
+
+    watched = db.relationship('Movie', backref= 'watcheds')
+    watched_user = db.relationship('User', backref= 'watcheds')
