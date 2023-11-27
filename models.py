@@ -35,3 +35,30 @@ class Tag(db.Model):
 
     movies= db.relationship('Movie', backref='tags')
     
+class User(db.Model):
+
+    __tablename__ = 'users'
+
+    id=db.Column(db.Integer, primary_key= True, autoincrement=True, nullable=False)
+    username= db.Column(db.String, unique=True, nullable=False)
+    password=db.Column(db.String, nullable=False)
+    firstname= db.Columnn(db.String, nullable=False)
+    lastname= db.Column(db.String, nullable=False)
+    email= db.Column(db.String, nullable=False)
+    location= db.Column(db.String, nullable=True)
+
+class Favorite(db.Model):
+
+    __tablename__ = 'favorites'
+
+    user_id= db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'), nullable=False)
+    title= db.Column(db.String, db.ForeignKey('movies.title'), nullable=False)
+
+class Watched(db.Model):
+
+    __tablename__= 'watcheds'
+
+    user_id= db.Column(db.Integer, db.ForeignKey('users.id'),nullable=False)
+    movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'), nullable=False)
+    title=db.Column(db.String, db.ForeignKey('movies.title'), nullable=False)
