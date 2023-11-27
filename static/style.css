@@ -7,14 +7,15 @@ h1 {
     font-style: oblique;
 }
 
-h3 {
+h3, p {
     color: goldenrod;
     font-family: Verdana, sans-serif;
     font-style: oblique;
+    align-items: center;
  
   }
  
-button#searchbar {
+button.bttn {
     font-family: Verdana, sans-serif;
     font-style: oblique;
     left: 150px;
@@ -25,7 +26,12 @@ button#searchbar {
   
   }
 
-button#catalog {
+.grid-item{
+  float: left;
+  margin-right: 50px;
+  margin-bottom: 50px;
+}
+/* button#catalog {
     font-family: Verdana, sans-serif;
     position: absolute;
     bottom: 95px;
@@ -34,7 +40,7 @@ button#catalog {
     padding: 10px;
     color: whitesmoke;
     background-color: goldenrod;
-  }
+  } */
   
   /* input#fruit {
     color: white;

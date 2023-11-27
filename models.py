@@ -35,13 +35,3 @@ class Tag(db.Model):
 
     movies= db.relationship('Movie', backref='tags')
     
-
-# class Genre(db.Model):
-
-#     __tablename__ = 'genres'
-
-#     id=db.Column(db.Integer, nullable=False)
-#     genre= db.Column(db.String, nullable=False)
-
-#     genres1= db.relationship('Movie', backref='genres')
-#     genres2= db.relationship('Movie', backref='genres')

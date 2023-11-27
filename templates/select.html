@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Movie Recommender</title>
+<script  src="static/script.js"></script>
+<link rel = "stylesheet" href="static/style.css" type="text/css">
+</head>
+
+
+<h3>HERE ARE YOUR SEARCH RESULTS:</h3>
+<body>
+
+<div class="grid-container"></div>    
+{%for movie in list_of_movies%}
+<div class="grid-item"><img class= "poster" src="https://image.tmdb.org/t/p/original/{{movie.image}}" width="70" height="75">  <p>{{movie.title}}</p>
+</div>
+
+{%endfor%}
+
+</body>
