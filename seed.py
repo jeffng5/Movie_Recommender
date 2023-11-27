@@ -1,27 +1,45 @@
 import pickle
 from sqlalchemy.orm import Session
-from models import Movie,db
+from models import Movie, db, Tag
 from app import db
 
 db.drop_all()
 db.create_all()
 
-with open('mvtitles.pickle', 'rb') as f:
-    moviedb = pickle.load(f)
-
-
-
-stuff= Movie(
-                 title = moviedb[0]['movie_results'][0]['title'],
-                image = moviedb[0]['movie_results'][0]['poster_path'],
-                 genre1= moviedb[0]['movie_results'][0]['genre_ids'][0],
-                 genre2= moviedb[0]['movie_results'][0]['genre_ids'][1],
-                #  genre3 = moviedb[0]['movie_results'][0]['genre_ids'][2],
-                 overview=moviedb[0]['movie_results'][0]['overview'],
-                #  release_year= (moviedb[0]['movie_results'][0]['release_date']),
-                 popularity=moviedb[0]['movie_results'][0]['popularity'],
-                 vote_average=moviedb[0]['movie_results'][0]['vote_average']
-                 )
+with open('/Users/jeffreyng/Movie_Recommender/name.pickle', 'rb') as f:
+    name = pickle.load(f)
+with open('/Users/jeffreyng/Movie_Recommender/images.pickle', 'rb') as f:
+    images = pickle.load(f)
+with open('/Users/jeffreyng/Movie_Recommender/genres1.pickle', 'rb') as f:
+    genres1 = pickle.load(f)
+with open('/Users/jeffreyng/Movie_Recommender/genres2.pickle', 'rb') as f:
+    genres2 = pickle.load(f)
+# with open('/Users/jeffreyng/Movie_Recommender/release_years.pickle', 'rb') as f:
+#     release_years = pickle.load(f)
+with open('/Users/jeffreyng/Movie_Recommender/popularitys.pickle', 'rb') as f:
+    popularitys = pickle.load(f)
+with open('/Users/jeffreyng/Movie_Recommender/vote_averages.pickle', 'rb') as f:
+    vote_averages = pickle.load(f)
+with open('/Users/jeffreyng/Movie_Recommender/subj.pickle', 'rb') as f:
+    subj = pickle.load(f)
 db.session.rollback()
-db.session.add_all([stuff])
+for i in range(len(name)):
+    stuff= Movie(
+                 title = name[i],
+                 image = images[i],
+                 genre1= genres1[i],
+                 genre2= genres2[i],
+                 overview=subj[i],
+                #  release_year= release_years[i],
+                 popularity=popularitys[i],
+                 vote_average=vote_averages[i]
+                 )
+
+    db.session.add(stuff)
+for i in range(1,len(subj)):
+    tags = Tag(
+        movie_id= i,
+        tag = subj[i]
+    )
+    db.session.add(tags)
 db.session.commit()

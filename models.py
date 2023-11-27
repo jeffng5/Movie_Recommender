@@ -19,7 +19,7 @@ class Movie(db.Model):
     genre2= db.Column(db.String, nullable=True)
     genre3= db.Column(db.String, nullable=True)
     overview = db.Column(db.Text, nullable=False)
-    release_year = db.Column(db.Integer, nullable=True)
+    # release_year = db.Column(db.String, nullable=True)
     popularity = db.Column(db.String, nullable=False)
     vote_average = db.Column(db.String, nullable=True)
 
