@@ -8,8 +8,12 @@ import pandas as pd
 from forms import MovieForm, CatalogForm, UserAddForm, LoginForm
 from models import db, connect_db, Movie, Tag, User
 
+
+
+
 app = Flask(__name__)
 app.run(debug=True)
+
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
 app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql:///jeffreyng'
@@ -47,21 +51,17 @@ def signup():
     form = UserAddForm()
 
     if form.validate_on_submit():
-        try:
-            User.register(
-            username=form.username.data,
-            password=form.password.data,
-            email=form.email.data,
-        
-                )
-            
+        username=form.username.data
+        password=form.password.data
+        email=form.password.data
+        user=User.register(username, password, email)
+        db.session.add(user)
+        db.session.commit()
 
-        except IntegrityError:
-            flash("Username already taken", 'danger')
-            return render_template('signup.html', form=form)
+        session['user_id'] = user.id
 
 
-        return redirect("/")
+        return redirect("/intro")
 
     else:
         return render_template('signup.html', form=form)
@@ -73,18 +73,27 @@ def login():
     form = LoginForm()
 
     if form.validate_on_submit():
-        u = User.authenticate(form.username.data,
-                                 form.password.data)
+        username= form.username.data
+        pwd=form.password.data
+
+        u = User.authenticate(username,
+                                 pwd)
 
         if u:
+            session['user_id'] = u.id
             flash(f"Hello, {u.username}!", "success")
-            return redirect("/")
+            return redirect("/intro")
 
         flash("Invalid credentials.", 'danger')
 
     return render_template('login.html', form=form)
 
-
+@app.route('/intro', methods=['GET', 'POST'])
+def intro():
+    if "user_id" not in session:
+        return redirect('/')
+    else:
+        return render_template('intro.html')
 
 
 
