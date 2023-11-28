@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Movie Recommender</title>
+<script  src="static/script.js"></script>
+<link rel = "stylesheet" href="static/style.css" type="text/css">
+</head>
+
+
+<h3>Choose from below criteria</h3>
+<form method="POST">
+    {{form.hidden_tag()}}
+    {% for field in form
+        if field.widget.input_type != 'hidden' %}
+<p>{{field}}{{field.label}}</p>
+{%endfor%}
+<button class="bttn">Select criteria</button>
+</form>

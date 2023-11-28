@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-
+from flask_bcrypt import Bcrypt, bcrypt
 
 db = SQLAlchemy()
 
@@ -20,8 +20,8 @@ class Movie(db.Model):
     genre3= db.Column(db.String, nullable=True)
     overview = db.Column(db.Text, nullable=False)
     # release_year = db.Column(db.String, nullable=True)
-    popularity = db.Column(db.String, nullable=False)
-    vote_average = db.Column(db.String, nullable=True)
+    popularity = db.Column(db.Float, nullable=False)
+    vote_average = db.Column(db.Float, nullable=True)
 
 
 
@@ -39,32 +39,59 @@ class User(db.Model):
 
     __tablename__ = 'users'
 
-    id=db.Column(db.Integer, primary_key= True, autoincrement=True, nullable=False)
+    id=db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
     username= db.Column(db.String, unique=True, nullable=False)
-    password=db.Column(db.String, nullable=False)
-    firstname= db.Columnn(db.String, nullable=False)
-    lastname= db.Column(db.String, nullable=False)
+    password=db.Column(db.Text, nullable=False)
     email= db.Column(db.String, nullable=False)
-    location= db.Column(db.String, nullable=True)
+
+
+    # start_register
+    @classmethod
+    def register(cls, username, password, email):
+        """Register user w/hashed password & return user."""
+        pwd= password.encode('utf-8')
+        hashed = bcrypt.hashpw(pwd, bcrypt.gensalt())
+        # turn bytestring into normal (unicode utf8) string
+        hashed_utf8 = hashed.decode("utf8")
+
+        # return instance of user w/username and hashed pwd
+        user= User(username=username, password=hashed_utf8, email=email)
+        db.session.add(user)
+        db.session.commit()
+        return user
+
+    @classmethod
+    def authenticate(cls, username, pwd):
+        u = User.query.filter_by(username=username).first()
+        
+        if u and Bcrypt.check_password_hash(u.password, pwd):
+
+            return u
+        else:
+            return False
+
+   
 
 class Favorite(db.Model):
 
     __tablename__ = 'favorites'
 
-    user_id= db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'), nullable=False)
-    title= db.Column(db.String, db.ForeignKey('movies.title'), nullable=False)
+    id= db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+    user_id= db.Column(db.Integer, nullable=False)
+    movie_id = db.Column(db.Integer, nullable=False)
+    title= db.Column(db.String, nullable=False)
 
-    favorite = db.relationship('Movie', backref= 'favorites')
-    favorited_user = db.relationship('User', backref= 'favorites')
+    # favorite = db.relationship('User', backref= 'favorites')
+    
 
 class Watched(db.Model):
 
     __tablename__= 'watcheds'
 
-    user_id= db.Column(db.Integer, db.ForeignKey('users.id'),nullable=False)
-    movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'), nullable=False)
-    title=db.Column(db.String, db.ForeignKey('movies.title'), nullable=False)
+    id= db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+    user_id= db.Column(db.Integer,nullable=False)
+    movie_id = db.Column(db.Integer, nullable=False)
+    title=db.Column(db.String, nullable=False)
 
-    watched = db.relationship('Movie', backref= 'watcheds')
-    watched_user = db.relationship('User', backref= 'watcheds')
+    # watched = db.relationship('User', backref= 'watcheds')
+    

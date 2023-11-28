@@ -5,8 +5,8 @@ from sqlalchemy import func
 import requests, json
 import json
 import pandas as pd
-from forms import MovieForm
-from models import db, connect_db, Movie, Tag
+from forms import MovieForm, CatalogForm, UserAddForm, LoginForm
+from models import db, connect_db, Movie, Tag, User
 
 app = Flask(__name__)
 app.run(debug=True)
@@ -31,8 +31,67 @@ db.create_all()
 @app.route('/')
 def home():
     return render_template('home.html')
-    
+
+@app.route('/signup', methods=["GET", "POST"])
+def signup():
+    """Handle user signup.
+
+    Create new user and add to DB. Redirect to home page.
+
+    If form not valid, present form.
+
+    If the there already is a user with that username: flash message
+    and re-present form.
+    """
+
+    form = UserAddForm()
+
+    if form.validate_on_submit():
+        try:
+            User.register(
+            username=form.username.data,
+            password=form.password.data,
+            email=form.email.data,
+        
+                )
+            
+
+        except IntegrityError:
+            flash("Username already taken", 'danger')
+            return render_template('signup.html', form=form)
+
+
+        return redirect("/")
+
+    else:
+        return render_template('signup.html', form=form)
    
+@app.route('/login', methods=["GET", "POST"])
+def login():
+    """Handle user login."""
+
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        u = User.authenticate(form.username.data,
+                                 form.password.data)
+
+        if u:
+            flash(f"Hello, {u.username}!", "success")
+            return redirect("/")
+
+        flash("Invalid credentials.", 'danger')
+
+    return render_template('login.html', form=form)
+
+
+
+
+
+
+
+
+
 
 
 @app.route('/search', methods=['GET', 'POST'])
@@ -46,8 +105,23 @@ def search_movie():
         return render_template("search.html", form = form) 
     
 
-@app.route('/catalog')
+@app.route('/catalog', methods=['GET', 'POST'])
 def browse():
-    browse=Movie.all()
 
-    return render_template('catalog.html')
+    form = CatalogForm()
+    if form.validate_on_submit():
+        genres = form.genre.data
+        popularitys= form.popularity.data
+        vote_averages=form.vote_average.data 
+    
+        list_of_movies_by_pop = Movie.query.filter(Movie.popularitys > popularitys)
+        list_of_movies_by_genres = Movie.query.filter(Movie.genre1 == genres | Movie.genre2 == genres)
+        list_of_movies_by_vote_averages = Movie.query.filter(Movie.vote_average > vote_averages)
+        return render_template('last_page.html', list_of_movies_by_pop= list_of_movies_by_pop, list_of_movies_by_genres=list_of_movies_by_genres, 
+                               list_of_movies_by_vote_averages= list_of_movies_by_vote_averages)
+    else:
+        return render_template('catalog.html', form=form)
+
+# Movie.query.filter(Movie.title.ilike("%" + term + "%")).all()
+#    left inner join
+# Favorites.movie.filter_by(Favorites.user_id = User.id)

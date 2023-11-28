@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Movie Recommender</title>
+<script  src="static/script.js"></script>
+<link rel = "stylesheet" href="static/style.css" type="text/css">
+</head>
+
+
+<h2>Register</h2>
+
+<h3>Register for our site</h3>
+<form method="POST">
+{{form.hidden_tag()}}
+    {% for field in form 
+        if field.widget.input_type != 'hidden' %}
+    <p>{{field.label}}{{field}}</p>
+    {%endfor%}
+
+
+<button>Register</button>
+</form>
