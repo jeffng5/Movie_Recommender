@@ -22,7 +22,7 @@ with open('/Users/jeffreyng/Movie_Recommender/static/pickle/vote_averages.pickle
     vote_averages = pickle.load(f)
 with open('/Users/jeffreyng/Movie_Recommender/static/pickle/subj.pickle', 'rb') as f:
     subj = pickle.load(f)
-db.session.rollback()
+
 for i in range(len(name)):
     stuff= Movie(
                  title = name[i],

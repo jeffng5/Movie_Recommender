@@ -1,5 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt, bcrypt
+from sqlalchemy import Float
+
 bcrypt=Bcrypt()
 db = SQLAlchemy()
 
@@ -17,10 +19,10 @@ class Movie(db.Model):
     image= db.Column(db.String, nullable=True)
     genre1= db.Column(db.String, nullable=False)
     genre2= db.Column(db.String, nullable=True)
-    genre3= db.Column(db.String, nullable=True)
+    # genre3= db.Column(db.String, nullable=True)
     overview = db.Column(db.Text, nullable=False)
     # release_year = db.Column(db.String, nullable=True)
-    # popularity = db.Column(db.Float(precision=2), nullable=False)
+    # popularity = db.Column(db.Float(precision=5), nullable=True)
     # vote_average = db.Column(db.Float(precision=2), nullable=False)
 
 

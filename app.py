@@ -90,10 +90,10 @@ def login():
 
 @app.route('/intro', methods=['GET', 'POST'])
 def intro():
-    if "user_id" not in session:
-        return redirect('/')
-    else:
-        return render_template('intro.html')
+    # if "user_id" not in session:
+    #     return redirect('/')
+    
+    return render_template('intro.html')
 
 
 
@@ -119,18 +119,28 @@ def browse():
 
     form = CatalogForm()
     if form.validate_on_submit():
-        genres = form.genre.data
-        popularitys= form.popularity.data
-        vote_averages=form.vote_average.data 
+        genres = form.genres.data
+        #popularitys= float(form.popularitys.data)
+        # vote_averages=form.vote_average.data 
     
-        list_of_movies_by_pop = Movie.query.filter(Movie.popularitys > popularitys)
-        list_of_movies_by_genres = Movie.query.filter(Movie.genre1 == genres | Movie.genre2 == genres)
-        list_of_movies_by_vote_averages = Movie.query.filter(Movie.vote_average > vote_averages)
-        return render_template('last_page.html', list_of_movies_by_pop= list_of_movies_by_pop, list_of_movies_by_genres=list_of_movies_by_genres, 
-                               list_of_movies_by_vote_averages= list_of_movies_by_vote_averages)
+        #list_of_movies_by_pop = Movie.query.filter(Movie.popularity <= popularitys)
+        list_of_movies_by_genres = Movie.query.filter_by(genre1 = genres)
+        list_of_movies_by_genres1 = Movie.query.filter(Movie.genre2 == genres)
+        # list_of_movies_by_vote_averages = Movie.query.filter(Movie.vote_average > vote_averages)
+        return render_template('last_page.html', list_of_movies_by_genres=list_of_movies_by_genres,
+            list_of_movies_by_genres1= list_of_movies_by_genres1)
+            #list_of_movies_by_pop= list_of_movies_by_pop) 
+                               #list_of_movies_by_vote_averages= list_of_movies_by_vote_averages)
     else:
         return render_template('catalog.html', form=form)
 
 # Movie.query.filter(Movie.title.ilike("%" + term + "%")).all()
 #    left inner join
 # Favorites.movie.filter_by(Favorites.user_id = User.id)
+
+
+
+@app.route("/<int:id>")
+def single_movie(id):
+    movie_details= Movie.query.filter(Movie.id== id)
+    return render_template('movie_details.html', movie_details=movie_details)

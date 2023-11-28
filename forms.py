@@ -1,7 +1,7 @@
-from wtforms import SelectField, StringField
+from wtforms import DecimalField, StringField
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
-from wtforms.validators import InputRequired, DataRequired, Email, Length
+from wtforms.validators import InputRequired, DataRequired, NumberRange, Length
 
 class MovieForm(FlaskForm):
     title = StringField('movie title')
@@ -9,11 +9,9 @@ class MovieForm(FlaskForm):
 
 
 class CatalogForm(FlaskForm):
-    title = StringField('movie title')
     genres= StringField('genre')
-    # popularitys= SelectField('popularity', choices= [(float(), '1-5')])
-    # vote_averages= SelectField('vote_averages', choices= [(6, 7)])
-
+    # popularitys= DecimalField('popularity', validators=[NumberRange(min=0, max =50, message='testing')])
+    # vote_averages= SelectField('vote_averages', choices= [(float(), '1-10'), (float(), '10-20'), (float(), '20-30'),(float(), '30-40', (float(), '40-50'))])
 
 class UserAddForm(FlaskForm):
     username = StringField('username', validators=[InputRequired()])

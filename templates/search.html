@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Movie Recommender</title>
-<script  src="static/script.js"></script>
-<link rel = "stylesheet" href="static/style.css" type="text/css">
-</head>
+{%extends 'home.html'%}
 
+
+{%block content%}
 <h3>Search for Movie</h3>
 <form method="POST">
     {{form.hidden_tag()}}
@@ -18,3 +13,5 @@
 </form>
 
 <button class="bttn"><a href= "/catalog">Browse Catalog Instead</a></button>
+
+{%endblock%}

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Movie Recommender</title>
+<script  src="static/script.js"></script>
+<link rel = "stylesheet" href="static/style.css" type="text/css">
+</head>
+
+
+{%for movie in movie_details%}
+
+<h3>{{movie.title}}</h3>
+<img class= "poster" src="https://image.tmdb.org/t/p/original/{{movie.image}}" width="200" height="275">
+<h3>{{movie.overview}}</h3>
+<h3>{{movie.genre1}} / {{movie.genre2}}</h3>
+
+{{movie.popularity}}
+
+{%endfor%}

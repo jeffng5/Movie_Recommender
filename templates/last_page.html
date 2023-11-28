@@ -1,0 +1,21 @@
+{%extends 'home.html'%}
+
+
+{%block content%}
+
+
+<h3>HERE ARE YOUR RECOMMENDED MOVIES:</h3>
+
+<div class="grid-container"></div>    
+{% for obj in list_of_movies_by_genres %}
+<div class="grid-item"><img class= "poster" src="https://image.tmdb.org/t/p/original/{{obj.image}}" width="70" height="75"> 
+<a href="/{{obj.id}}">{{obj.title}}</a>
+</div>
+{%endfor%}
+{% for obj in list_of_movies_by_genres1 %}
+<div class="grid-item"><img class= "poster" src="https://image.tmdb.org/t/p/original/{{obj.image}}" width="70" height="75"> 
+<a href="/{{obj.id}}">{{obj.title}}</a>
+</div>
+{%endfor%}
+   
+{%endblock%}
