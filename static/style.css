@@ -1,7 +1,7 @@
 body{
-  background-color: black;
+  background-color: slategrey;
 }
-h1, h2 {
+h1, h2, h4 {
     color: goldenrod;
     font-family: Verdana, sans-serif;
     font-style: oblique;
@@ -37,6 +37,38 @@ button.bttn {
 
 
 img.favorited-movie{
-color: aliceblue;
+position: absolute;
+top: 60px;
+left: 215px;
+
+}
+
+img.watched-movie{
+position: absolute;
+top: 97px;
+left: 215px;
+
+}
+
+img.favorited-movie-grid{
+  position: relative;
+  top: -42px;
+  left: 0px;
+  
+  }
+  
+img.watched-movie-grid{
+  position: relative;
+  top: -15px;
+  left: -29px;
+  
+  }
+
+a#title-detail{
+ color: goldenrod; 
+ font-family: Trebuchet MS, sans-serif;
+ position:relative;
+ top: -25px;
+ left: -22px;
 
 }

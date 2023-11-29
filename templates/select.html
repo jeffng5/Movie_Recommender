@@ -13,8 +13,10 @@
 
 <div class="grid-container"></div>    
 {%for movie in list_of_movies%}
-<div class="grid-item"><img class= "poster" src="https://image.tmdb.org/t/p/original/{{movie.image}}" width="70" height="75"> 
-<a href="/{{movie.id}}">{{movie.title}}</a>
+<div class="grid-item"><img class= "poster" src="https://image.tmdb.org/t/p/original/{{movie.image}}" width="70" height="75">
+<img class="favorited-movie-grid" src="../static/images/favorited.png" height="25" width="25">
+<img class= "watched-movie-grid" src="../static/images/check-eye.png" height= "25" width="25"> 
+<a id="title-detail" href="/{{movie.id}}">{{movie.title}}</a>
 </div>
 
 {%endfor%}

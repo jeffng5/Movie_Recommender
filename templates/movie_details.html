@@ -12,10 +12,12 @@
 
 <h3>{{movie.title}}</h3>
 <img class= "poster" src="https://image.tmdb.org/t/p/original/{{movie.image}}" width="200" height="275">
-<h3>{{movie.summary}}</h3>
+<img class="favorited-movie" src="../static/images/favorited.png" height="40" width="40">
+<img class= "watched-movie" src="../static/images/check-eye.png" height= "40" width="40">
+<h3>Synopsis : {{movie.summary}}</h3>
 <h3>{{movie.genre1}} / {{movie.genre2}}</h3>
-<img class="favorited-movie" src="./static/images/favorited.png">
 
-{{movie.popularity}}
+
+<h3>Popularity Rating: {{movie.popularity}}</h3>
 
 {%endfor%}
