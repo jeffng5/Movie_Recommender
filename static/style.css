@@ -31,55 +31,12 @@ button.bttn {
   margin-right: 50px;
   margin-bottom: 50px;
 }
-/* button#catalog {
-    font-family: Verdana, sans-serif;
-    position: absolute;
-    bottom: 95px;
-    font-style: oblique;
-    border-radius : 8px;
-    padding: 10px;
-    color: whitesmoke;
-    background-color: goldenrod;
-  } */
-  
-  /* input#fruit {
-    color: white;
-    font-size: medium;
-  }
-  
-  .search-container {
-    color: whitesmoke;
-    
-  }
-  .search-container input,
-  .search-container .suggestions {
-    font-size: small;
-    color: whitesmoke;
-    position :relative;
-    top: 350px;
-    left: 500px;
-    
-    
-  }
-  .search-container input {
-    background: linear-gradient(to right, forestgreen , teal, aqua);
-    color: white;
-    font-size: medium;
-  }
-  /* .search-container .suggestions {
-  
-  } 
-  
-  option {
-    background-color: darkcyan;
-    color: whitesmoke;
-  }
-  #fruit {
-    color: whitesmoke;
-  }
- 
-  
-  input[placeholder]{
-     color:whitesmoke;
-  }
- */
+
+/* Check eye by Omar Safaa from <a href="https://thenounproject.com/browse/icons/term/check-eye/" target="_blank" title="Check eye Icons">Noun Project</a> (CC BY 3.0) */
+/* Favorite by Poeticons from <a href="https://thenounproject.com/browse/icons/term/favorite/" target="_blank" title="Favorite Icons">Noun Project</a> (CC BY 3.0) */
+
+
+img.favorited-movie{
+color: aliceblue;
+
+}
