@@ -9,8 +9,8 @@
 
 
 <h3>HERE ARE YOUR SEARCH RESULTS:</h3>
-<body>
 
+<body>
 <div class="grid-container"></div>    
 {%for movie in list_of_movies%}
 <div class="grid-item"><img class= "poster" src="https://image.tmdb.org/t/p/original/{{movie.image}}" width="70" height="75">
@@ -20,5 +20,6 @@
 </div>
 
 {%endfor%}
-
 </body>
+
+<p><h3><a href="/intro">Start Over</a></h3></p>

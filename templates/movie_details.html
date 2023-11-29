@@ -7,7 +7,6 @@
 <link rel = "stylesheet" href="static/style.css" type="text/css">
 </head>
 
-
 {%for movie in movie_details%}
 
 <h3>{{movie.title}}</h3>
@@ -20,4 +19,9 @@
 
 <h3>Popularity Rating: {{movie.popularity}}</h3>
 
+
+
+<form class = "recommend-movie" action="/recommendation/{{movie.id}}"><button id="rec">Show me MGDB recommends,</button>
+</form>
 {%endfor%}
+<h3><a href="/intro">Start Over</a></h3>

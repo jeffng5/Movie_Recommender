@@ -138,3 +138,62 @@ def logout():
 
     flash(f'LOGOUT SUCCESSFUL!!')
     return render_template('home.html')
+
+import spacy
+import numpy as np
+nlp= spacy.load("en_core_web_lg")
+spacy_tokenizer=nlp.tokenizer
+import pandas as pd
+
+def prep(x):
+    # tokenizing=spacy_tokenizer(x) 
+    embedding=nlp(x).vector.reshape(300,)
+    return embedding
+    
+def prepare(x):
+    # tokenizing=spacy_tokenizer(x)
+    embedding_many=nlp(x).vector.reshape(300,)
+    return embedding_many
+
+@app.route('/recommendation/<int:id>')
+def recommend_movie(id):
+    movie_details= Movie.query.filter(Movie.id==id).first()
+    all_movie_details= Movie.query.all()
+    
+
+    movie_details=movie_details.overview
+    all_movie_detail= [all_movie_details[x].overview for x in range(len(all_movie_details))]
+
+
+    #recommendation function
+    
+    
+    embedding=prep(movie_details)
+    
+        
+    listA=[]
+    #turning the strings into word embeddings
+    embedding_many=[prepare(str(x)) for x in all_movie_detail]
+    
+    #computing the dot product and cosine similarity
+    for i in range(len(embedding_many)):
+        listA.append(np.dot(embedding_many[i], embedding)/(np.linalg.norm(embedding_many[i])*np.linalg.norm(embedding)))
+    
+
+    df0= pd.Series(listA)
+    df1= pd.Series([num for num in range(0,len(listA))])
+    frames=[df0, df1]
+    work= pd.concat(frames, axis=1)
+    work['cos_sim']=listA
+    #sorting the cosine similarities
+    idx=work['cos_sim'].sort_values(ascending=False)[1:11].index 
+        
+    sorted_movies=[]
+    for num in idx:
+        values= work['cos_sim'][idx]
+        sorted_movies.append(all_movie_details[num])
+            
+    
+   
+    return render_template('recommend.html', #s=s, all_movie_details=all_movie_details, 
+                           movie_details=movie_details, sorted_movies=sorted_movies, values=values)

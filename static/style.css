@@ -14,7 +14,17 @@ h3, p {
     align-items: center;
  
   }
- 
+
+button.login-button {
+  font-family: Verdana, sans-serif;
+  font-style: oblique;
+  border-radius : 8px;
+  padding: 8px;
+  background-color: goldenrod;
+  color: whitesmoke;
+
+}
+
 button.bttn {
     font-family: Verdana, sans-serif;
     font-style: oblique;
@@ -71,4 +81,16 @@ a#title-detail{
  top: -25px;
  left: -22px;
 
+}
+
+button#rec{
+position: absolute;
+top: 235px;
+left: 215px;
+border-radius : 8px;
+padding: 10px;
+background-color: goldenrod;
+color: whitesmoke;
+font-family: Verdana, sans-serif;
+font-style: oblique;
 }
