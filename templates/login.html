@@ -14,7 +14,7 @@
     <div class="col-md-7 col-lg-5">
       <h2 class="join-message">Please Log In to Movie Geeks DB</h2>
 
-      <form action= "/intro" method="POST" id="user_form">
+      <form action='/intro'method="POST" id="user_form">
         {{ form.hidden_tag() }}
 
         {% for field in form if field.widget.input_type != 'hidden' %}

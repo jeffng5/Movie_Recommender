@@ -1,19 +1,22 @@
-from flask import Flask, render_template, request, flash, redirect, session, g, sessions
+from flask import Flask, render_template, request, flash, redirect, session
+from flask_session import Session
 # from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import func
 import requests, json
+import ast
 import json
 import pandas as pd
 from forms import MovieForm, CatalogForm, UserAddForm, LoginForm
-from models import db, connect_db, Movie, Tag, User
-
-
-
+from models import db, connect_db, Movie, Tag, User, Favorite, Watched
 
 app = Flask(__name__)
 app.run(debug=True)
 
+SECRET_KEY = "changeme"
+SESSION_TYPE = 'filesystem'
+app.config.from_object(__name__)
+Session(app)
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
 app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql:///jeffreyng'
@@ -24,7 +27,7 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = "it's a secret"
 # toolbar = DebugToolbarExtension(app)
 
-# api_key = '1288b79b'
+ID= "curr_user"
 
 
 connect_db(app)
@@ -38,15 +41,7 @@ def home():
 
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
-    """Handle user signup.
 
-    Create new user and add to DB. Redirect to home page.
-
-    If form not valid, present form.
-
-    If the there already is a user with that username: flash message
-    and re-present form.
-    """
 
     form = UserAddForm()
 
@@ -54,12 +49,12 @@ def signup():
         username=form.username.data
         password=form.password.data
         email=form.password.data
+        
         user=User.register(username, password, email)
         db.session.add(user)
         db.session.commit()
 
-        session['user_id'] = user.id
-
+        session["user_id"] = user.id
 
         return redirect("/intro")
 
@@ -80,27 +75,22 @@ def login():
                                  pwd)
 
         if u:
-            session['user_id'] = u.id
+            session["user_id"] =u.id.__dict__
+            valobj=ast.literal_eval(repr(session['user_id']))
+            session["username"]=u.username.__dict__
             flash(f"Hello, {u.username}!", "success")
             return redirect("/intro")
 
-        flash("Invalid credentials.", 'danger')
-
+        else:
+            return (f'IT DIDNT WORK!!')
+            
     return render_template('login.html', form=form)
 
 @app.route('/intro', methods=['GET', 'POST'])
 def intro():
-    # if "user_id" not in session:
-    #     return redirect('/')
-    
+
+    # hello=ast.literal_eval(repr(session['user_id']))
     return render_template('intro.html')
-
-
-
-
-
-
-
 
 
 @app.route('/search', methods=['GET', 'POST'])
@@ -144,3 +134,11 @@ def browse():
 def single_movie(id):
     movie_details= Movie.query.filter(Movie.id== id)
     return render_template('movie_details.html', movie_details=movie_details)
+
+
+@app.route('/logout')
+def logout():
+    """Handle logout of user."""
+
+    flash(f'LOGOUT SUCCESSFUL!!')
+    return render_template('home.html')

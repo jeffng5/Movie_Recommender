@@ -1,39 +1,18 @@
 {%extends 'home.html'%}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Movie Recommender</title>
-<script  src="static/script.js"></script>
-<link rel = "stylesheet" href="static/style.css" type="text/css">
-</head>
 
-
+{%block content%}
 <h2>Register</h2>
 
 <h3>Register for our site</h3>
-<form method="POST">
+<form action='/intro' method="POST">
 {{form.hidden_tag()}}
     {% for field in form 
         if field.widget.input_type != 'hidden' %}
     <p>{{field.label}}{{field}}</p>
-    {%endfor%}
+{%endfor%}
 
 
 <button>Register</button>
 </form>
 
-<h1>MOVIE GEEKS DB</h1>
-
-Hi, {{username.username}}
-<h3>Do you already have a movie in mind? Please search through our 15,000 movie database</h3>
-<form action="/search">
-
-<button class="bttn">Search db for my movie</button>
-</form>
-<form action="/catalog">
-<button class="bttn">NO, I would like to browse your catalog!</button>
-</form>
-
-  </body>
-</html>
+{%endblock%}

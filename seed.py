@@ -1,6 +1,6 @@
 import pickle
 from sqlalchemy.orm import Session
-from models import Movie, db, Tag
+from models import Movie, db, Tag, User, Favorite, Watched
 from app import db
 
 db.drop_all()
