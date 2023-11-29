@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, flash, redirect, session
-from flask_session import Session
+# from flask_session import Session
 # from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import func
@@ -13,10 +13,6 @@ from models import db, connect_db, Movie, Tag, User, Favorite, Watched
 app = Flask(__name__)
 app.run(debug=True)
 
-SECRET_KEY = "changeme"
-SESSION_TYPE = 'filesystem'
-app.config.from_object(__name__)
-Session(app)
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
 app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql:///jeffreyng'
