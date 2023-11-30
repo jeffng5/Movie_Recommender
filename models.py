@@ -1,6 +1,11 @@
+from flask import Flask
+import flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt, bcrypt
 from sqlalchemy import Float
+
+
+
 
 bcrypt=Bcrypt()
 db = SQLAlchemy()

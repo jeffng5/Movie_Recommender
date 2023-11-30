@@ -7,9 +7,9 @@
 {%for movie in sorted_movies%}
 <div>
 <img class= "poster" src="https://image.tmdb.org/t/p/original/{{movie.image}}" width="200" height="275">
-<h3>{{movie.title}}</h3>
+<a id="title-detail" href="/{{movie.id}}">{{movie.title}}</a>
 <h3>Synopsis: {{movie.summary}}</h3>
-<h3>{{movie.overview}}</h3>
+
 {%endfor%}
 {% for value in values%}
 <h3>Similarity value: {{value}}</h3>

@@ -2,17 +2,23 @@ from flask import Flask, render_template, request, flash, redirect, session
 # from flask_session import Session
 # from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy import func
+from flask_sqlalchemy import SQLAlchemy
 import requests, json
 import ast
 import json
+from collections.abc import Mapping
 import pandas as pd
 from forms import MovieForm, CatalogForm, UserAddForm, LoginForm
 from models import db, connect_db, Movie, Tag, User, Favorite, Watched
 
-app = Flask(__name__)
-app.run(debug=True)
 
+
+def create_app():
+    app = Flask(__name__)
+    with app.app_context():
+        return app
+create_app()
+app = Flask(__name__)
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
 app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql:///jeffreyng'
@@ -23,7 +29,7 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = "it's a secret"
 # toolbar = DebugToolbarExtension(app)
 
-ID= "curr_user"
+
 
 
 connect_db(app)
@@ -37,7 +43,6 @@ def home():
 
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
-
 
     form = UserAddForm()
 

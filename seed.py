@@ -1,13 +1,14 @@
 import pickle
+from flask import Flask
 from sqlalchemy.orm import Session
 from models import Movie, db, Tag, User, Favorite, Watched
 from app import db
 from sqlalchemy import MetaData
 from sqlalchemy import create_engine
 
-metadata=MetaData()
-engine = create_engine('postgresql:///jeffreyng')
-metadata.bind = engine
+# metadata=MetaData()
+# engine = create_engine('postgresql:///jeffreyng')
+# metadata.bind = engine
 # meta.create_all(engine)
 
 db.session.rollback()
