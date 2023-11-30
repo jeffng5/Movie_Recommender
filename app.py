@@ -6,19 +6,16 @@ from flask_sqlalchemy import SQLAlchemy
 import requests, json
 import ast
 import json
+import pickle
 from collections.abc import Mapping
 import pandas as pd
 from forms import MovieForm, CatalogForm, UserAddForm, LoginForm
 from models import db, connect_db, Movie, Tag, User, Favorite, Watched
 
 
-
-def create_app():
-    app = Flask(__name__)
-    with app.app_context():
-        return app
-create_app()
+        
 app = Flask(__name__)
+app.app_context().push()
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
 app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql:///jeffreyng'
@@ -100,6 +97,9 @@ def search_movie():
     if form.validate_on_submit():
         term = form.title.data
         list_of_movies = Movie.query.filter(Movie.title.ilike("%" + term + "%")).all()
+        if len(list_of_movies)==0:
+            flash('Query found 0 results')
+            return redirect('/search')
         return render_template("select.html", list_of_movies= list_of_movies)
     else:
         return render_template("search.html", form = form) 
@@ -155,10 +155,10 @@ def prep(x):
     embedding=nlp(x).vector.reshape(300,)
     return embedding
     
-def prepare(x):
-    # tokenizing=spacy_tokenizer(x)
-    embedding_many=nlp(x).vector.reshape(300,)
-    return embedding_many
+# def prepare(x):
+#     # tokenizing=spacy_tokenizer(x)
+#     embedding_many=nlp(x).vector.reshape(300,)
+#     return embedding_many
 
 @app.route('/recommendation/<int:id>')
 def recommend_movie(id):
@@ -178,7 +178,13 @@ def recommend_movie(id):
         
     listA=[]
     #turning the strings into word embeddings
-    embedding_many=[prepare(str(x)) for x in all_movie_detail]
+    # embedding_many=[prepare(str(x)) for x in all_movie_detail]
+    
+    # import pickle
+    # with open ('embedding_many.pickle', 'wb') as f:
+    #     pickle.dump(embedding_many, f, 5)
+    with open('/Users/jeffreyng/Movie_Recommender/embedding_many.pickle', 'rb') as f:
+        embedding_many = pickle.load(f)
     
     #computing the dot product and cosine similarity
     for i in range(len(embedding_many)):

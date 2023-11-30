@@ -7,7 +7,7 @@ h1, h2, h4 {
     font-style: oblique;
 }
 
-h3, p {
+h3, p, a {
     color: goldenrod;
     font-family: Verdana, sans-serif;
     font-style: oblique;
@@ -93,4 +93,18 @@ background-color: goldenrod;
 color: whitesmoke;
 font-family: Verdana, sans-serif;
 font-style: oblique;
+}
+
+h3 a.reset{
+  color: goldenrod;
+  font-family: Verdana, sans-serif;
+  font-style: oblique;
+  align-items: center;
+
+}
+
+a {
+  color: whitesmoke;
+  font-family: Verdana, sans-serif;
+  font-style: oblique;
 }

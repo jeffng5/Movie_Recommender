@@ -1,4 +1,4 @@
-# Movie_Recommender
+# Movie_Recommender - speeded up algorithm
 Capstone 1 project to recommend movies 
 
 NOTE:

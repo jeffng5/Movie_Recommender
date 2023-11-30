@@ -100,3 +100,10 @@ class Watched(db.Model):
     # watched = db.relationship('User', backref= 'watcheds')
 
 
+# class Embedding(db.Model):
+    
+    # __tablename__='embeddings'
+    
+    # id=db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+    # embedding = db.Column(db.Float, nullable=True)
+    
