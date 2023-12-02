@@ -1,17 +1,20 @@
 
-const mid = document.getELementById('title-detail').innerHTML
-console.log(mid)
+const m_id = document.getElementById('heading')
+console.log(m_id)
 
 
 async function postFavorite() {
     
-    let response = await axios.post("http://127.0.0.1:5000/post-to-favorites", mid)
-    console.log(response.data)
+let response = await axios.post("http://127.0.0.1:5000/post-to-favorites", {m_id})
+console.log(response.data)
 
 }
 
-const icon = document.querySelector('img.favorite-movie-grid')
+postFavorite()
 
-icon.addEventListener("click", function(){postFavorite()
-}
-)
+// const icon = document.getElementById('heading')
+
+// icon.addEventListener("click", function(){postFavorite()
+// }
+// )
+
