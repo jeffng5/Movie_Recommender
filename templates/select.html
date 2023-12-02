@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>Movie Recommender</title>
-<script  src="static/script.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>  
 <link rel = "stylesheet" href="static/style.css" type="text/css">
 <script src='static/icon-listing.js'></script>
 </head>
 
-
-<h3>HERE ARE YOUR SEARCH RESULTS:</h3>
+<h3 id="heading" >HERE ARE YOUR SEARCH RESULTS:</h3>
 
 <body>
 <div class="grid-container"></div>    
@@ -22,5 +22,7 @@
 
 {%endfor%}
 </body>
+
+{{m_id}}
 
 <p><h3><a href="/intro">Start Over</a></h3></p>

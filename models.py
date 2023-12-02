@@ -80,9 +80,9 @@ class Favorite(db.Model):
     id= db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
     user_id= db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'), nullable=False)
-    title= db.Column(db.String, nullable=False)
+    title= db.Column(db.String, nullable=True)
 
-    # favorite = db.relationship('User', backref= 'favorites')
+    movie_f = db.relationship('Movie', cascade="all,delete", backref= 'favorites')
     favorite = db.relationship("User", cascade="all,delete", backref="favorites")
 
 class Watched(db.Model):
@@ -92,8 +92,9 @@ class Watched(db.Model):
     id= db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
     user_id= db.Column(db.Integer,db.ForeignKey('users.id'), nullable=False)
     movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'), nullable=False)
-    title=db.Column(db.String, nullable=False)
+    title=db.Column(db.String, nullable=True)
 
+    movie_w = db.relationship('Movie', cascade="all,delete", backref= 'watcheds')
     watched = db.relationship('User', cascade='all,delete', backref= 'watcheds')
 
 

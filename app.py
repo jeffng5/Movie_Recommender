@@ -97,7 +97,12 @@ def search_movie():
         term = form.title.data
         list_of_movies = Movie.query.filter(Movie.title.ilike("%" + term + "%")).order_by(Movie.popularity.desc())
         
-        uid= session['user_id']
+        u_id= session['user_id']
+
+        
+        # favorite= Favorite(user_id=u_id, movie_id=m_id)
+        # db.session.add(favorite)
+        # db.session.commit()
         
         return render_template("select.html", list_of_movies= list_of_movies)
     else:
@@ -216,7 +221,18 @@ def recommend_movie(id):
         sorted_movies.append(all_movie_details[num])
         no_duplicates=sorted_movies
     
+
+
+
+
     
    
     return render_template('recommend.html', no_duplicates= no_duplicates, values=values)
                         #    movie_details=movie_details, sorted_movies=sorted_movies, values=values)
+
+
+@app.route('/post-to-favorites', methods=['POST'])
+def add_favorite():
+    data = request.get_json(silent=True)
+    item = {'m_id': data.get('m_id')}
+    return render_template("select.html", m_id =item) 
