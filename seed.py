@@ -39,21 +39,29 @@ with open('/Users/jeffreyng/Movie_Recommender/static/pickle/popularitys.pickle',
 #     vote_averages = pickle.load(f)
 with open('/Users/jeffreyng/Movie_Recommender/static/pickle/subj.pickle', 'rb') as f:
     subj = pickle.load(f)
-with open('/Users/jeffreyng/Movie_Recommender/static/pickle/topic.pickle', 'rb') as f:
-    topicz = pickle.load(f)
+with open('/Users/jeffreyng/Movie_Recommender/static/pickle/synopsis.pickle', 'rb') as f:
+    synopsis = pickle.load(f)
+
+
+
+
+
+
+
+
 for i in range(len(name)):
     stuff= Movie(
-                 title = name[i],
-                 image = images[i],
-                 genre1= genres1[i],
-                 genre2= genres2[i],
-                 summary= topicz[i],
-                 overview=subj[i],
-                 popularity=popularitys[i]
+                   title = name[i],
+                    image = images[i],
+                    genre1= genres1[i],
+                    genre2= genres2[i],
+                    summary= synopsis[i],
+                    overview=subj[i],
+                    popularity=popularitys[i]
                  )
 
     db.session.add(stuff)
-for i in range(1,len(subj)):
+for i in range(len(subj)):
     tags = Tag(
         movie_id= i,
         tag = subj[i]
