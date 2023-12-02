@@ -96,9 +96,9 @@ def search_movie():
     if form.validate_on_submit():
         term = form.title.data
         list_of_movies = Movie.query.filter(Movie.title.ilike("%" + term + "%")).order_by(Movie.popularity.desc())
-        # if len(list_of_movies)==0:
-        #     flash('Query found 0 results')
-            #return redirect('/search')
+        
+        uid= session['user_id']
+        
         return render_template("select.html", list_of_movies= list_of_movies)
     else:
         return render_template("search.html", form = form) 
@@ -133,6 +133,8 @@ def browse():
 @app.route("/<int:id>")
 def single_movie(id):
     movie_details= Movie.query.filter(Movie.id== id)
+    uid= session['user_id']
+    mid= id
     return render_template('movie_details.html', movie_details=movie_details)
 
 
