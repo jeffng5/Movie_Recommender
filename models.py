@@ -5,8 +5,6 @@ from flask_bcrypt import Bcrypt, bcrypt
 from sqlalchemy import Float
 
 
-
-
 bcrypt=Bcrypt()
 db = SQLAlchemy()
 
@@ -19,17 +17,16 @@ class Movie(db.Model):
 
     __tablename__ = 'movies'
     
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
     title = db.Column(db.String, nullable=False)
     image= db.Column(db.String, nullable=True)
     genre1= db.Column(db.String, nullable=False)
     genre2= db.Column(db.String, nullable=True)
     summary=db.Column(db.Text, nullable=False)
     overview = db.Column(db.Text, nullable=False)
-    # release_year = db.Column(db.String, nullable=True)
     popularity = db.Column(db.Float(precision=5), nullable=True)
-    vote_average = db.Column(db.Float(precision=2), nullable=False)
-
+    
+    favorite_movies= db.relationship('Favorite', cascade= "all,delete", backref= 'movies')
 
 
 class Tag(db.Model):
@@ -40,13 +37,13 @@ class Tag(db.Model):
     movie_id= db.Column(db.Integer, db.ForeignKey('movies.id'), nullable=False)
     tag = db.Column(db.String, nullable=False)
 
-    movies= db.relationship('Movie', backref='tags')
+    movies= db.relationship('Movie', cascade='all,delete', backref='tags')
     
 class User(db.Model):
 
     __tablename__ = 'users'
 
-    id=db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
+    id=db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
     username= db.Column(db.Text, unique=True, nullable=False)
     password=db.Column(db.Text, nullable=False)
     email= db.Column(db.String, nullable=True)
@@ -81,29 +78,23 @@ class Favorite(db.Model):
     __tablename__ = 'favorites'
 
     id= db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    user_id= db.Column(db.Integer, nullable=False)
-    movie_id = db.Column(db.Integer, nullable=False)
+    user_id= db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'), nullable=False)
     title= db.Column(db.String, nullable=False)
 
     # favorite = db.relationship('User', backref= 'favorites')
-    
+    favorite = db.relationship("User", cascade="all,delete", backref="favorites")
 
 class Watched(db.Model):
 
     __tablename__= 'watcheds'
 
     id= db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    user_id= db.Column(db.Integer,nullable=False)
-    movie_id = db.Column(db.Integer, nullable=False)
+    user_id= db.Column(db.Integer,db.ForeignKey('users.id'), nullable=False)
+    movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'), nullable=False)
     title=db.Column(db.String, nullable=False)
 
-    # watched = db.relationship('User', backref= 'watcheds')
+    watched = db.relationship('User', cascade='all,delete', backref= 'watcheds')
 
 
-# class Embedding(db.Model):
-    
-    # __tablename__='embeddings'
-    
-    # id=db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    # embedding = db.Column(db.Float, nullable=True)
     

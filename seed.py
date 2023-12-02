@@ -1,42 +1,29 @@
 import pickle
 from flask import Flask
 from sqlalchemy.orm import Session
-from models import Movie, db, Tag, User, Favorite, Watched, Embedding
+from models import Movie, db, Tag, User, Favorite, Watched
 from app import db, prepare
-from sqlalchemy import MetaData
+from sqlalchemy import MetaData, Table, Column, Numeric, Integer, VARCHAR
 from sqlalchemy import create_engine
+from sqlalchemy import text
 
-import numpy as np
-from psycopg2.extensions import register_adapter, AsIs
-
-def addapt_numpy_float64(numpy_float64):
-    return AsIs(numpy_float64)
-
-def addapt_numpy_int64(numpy_int64):
-    return AsIs(numpy_int64)
-
-def addapt_numpy_float32(numpy_float32):
-    return AsIs(numpy_float32)
-
-def addapt_numpy_int32(numpy_int32):
-    return AsIs(numpy_int32)
-
-def addapt_numpy_array(numpy_array):
-    return AsIs(tuple(numpy_array))
-
-register_adapter(np.float64, addapt_numpy_float64)
-register_adapter(np.int64, addapt_numpy_int64)
-register_adapter(np.float32, addapt_numpy_float32)
-register_adapter(np.int32, addapt_numpy_int32)
-register_adapter(np.ndarray, addapt_numpy_array)
 
 # metadata=MetaData()
-# engine = create_engine('postgresql:///jeffreyng')
-# metadata.bind = engine
-# meta.create_all(engine)
+#engine = create_engine('postgresql:///jeffreyng')
+#meta = MetaData(bind=engine)
+# MetaData.reflect(meta)
+#meta.create_all()
 
+# Movie.__table__.drop(engine)
+
+
+# db.drop_all()
 db.session.rollback()
 db.create_all()
+
+
+
+
 
 with open('/Users/jeffreyng/Movie_Recommender/static/pickle/name.pickle', 'rb') as f:
     name = pickle.load(f)
@@ -48,8 +35,8 @@ with open('/Users/jeffreyng/Movie_Recommender/static/pickle/genres2.pickle', 'rb
     genres2 = pickle.load(f)
 with open('/Users/jeffreyng/Movie_Recommender/static/pickle/popularitys.pickle', 'rb') as f:
     popularitys = pickle.load(f)
-with open('/Users/jeffreyng/Movie_Recommender/static/pickle/vote_averages.pickle', 'rb') as f:
-    vote_averages = pickle.load(f)
+# with open('/Users/jeffreyng/Movie_Recommender/static/pickle/vote_averages.pickle', 'rb') as f:
+#     vote_averages = pickle.load(f)
 with open('/Users/jeffreyng/Movie_Recommender/static/pickle/subj.pickle', 'rb') as f:
     subj = pickle.load(f)
 with open('/Users/jeffreyng/Movie_Recommender/static/pickle/topic.pickle', 'rb') as f:
@@ -62,9 +49,7 @@ for i in range(len(name)):
                  genre2= genres2[i],
                  summary= topicz[i],
                  overview=subj[i],
-                #  release_year= release_years[i],
-                 popularity=popularitys[i],
-                 vote_average=vote_averages[i]
+                 popularity=popularitys[i]
                  )
 
     db.session.add(stuff)
@@ -75,16 +60,6 @@ for i in range(1,len(subj)):
     )
     db.session.add(tags)
     
-import spacy
-import numpy as np
-nlp= spacy.load("en_core_web_lg")
-spacy_tokenizer=nlp.tokenizer
-import pandas as pd
-
-def prepare(x):
-    # tokenizing=spacy_tokenizer(x)
-    embedding_many=nlp(x).vector.reshape(30,10)
-    return embedding_many
 
 # all_movie_details= Movie.query.all()
 # movie_details=all_movie_details.overview
