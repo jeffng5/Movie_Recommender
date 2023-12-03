@@ -170,9 +170,9 @@ def recommend_movie(id):
     # movie_details= [movie_details[x].overview for x in range(len(movie_details))]
     all_movie_details= Movie.query.all()
     
-    all_movie_details=list(all_movie_details[13650:])
+    all_movie_details=list(all_movie_details[14000:])
     movie_details= movie_details.overview
-    # all_movie_detail= [all_movie_details[x].overview for x in range(13650, len(all_movie_details))]
+    all_movie_detail= [all_movie_details[x].overview for x in range(0,len(all_movie_details))]
     
 
     
@@ -182,24 +182,24 @@ def recommend_movie(id):
     
         
     listA=[]
-    #turning the strings into word embeddings
-    # embedding_many=[]
-    # for x in all_movie_detail:
-    #     try:
-    #         embedding_many.append(prepare(x))
-    #     except:
-    #         pass
+    # turning the strings into word embeddings
+    embedding_many=[]
+    for x in all_movie_detail:
+        try:
+            embedding_many.append(prepare(x))
+        except:
+            pass
 
     
-    import pickle
-    #opening the file
-    with open('/Users/jeffreyng/Movie_Recommender/embedding_many.pickle', 'rb') as f:
-        embedding_many = pickle.load(f)
+    
+    # #opening the file
+    # with open('/Users/jeffreyng/Movie_Recommender/embedding_many.pickle', 'rb') as f:
+    #     embedding_many = pickle.load(f)
     
     
     # #pickling the file
-    # with open ('embedding_many.pickle', 'wb') as f:
-    #     pickle.dump(embedding_many, f, 5)
+    with open ('embedding_many.pickle', 'wb') as f:
+        pickle.dump(embedding_many, f, 5)
 
     #computing the dot product and cosine similarity
     
