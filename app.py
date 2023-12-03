@@ -241,7 +241,7 @@ def add_favorite():
         user_id= session['user_id']
         movie_id = item0
         db.session.add(Favorite(user_id=user_id, movie_id=movie_id))
-    else:
+    elif item1:
         user_id= session['user_id']
         movie_id = item0
         x = Favorite.query.filter(Favorite.user_id==user_id, Favorite.movie_id==movie_id)
