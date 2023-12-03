@@ -139,9 +139,9 @@ def browse():
 def single_movie(id):
     movie_details= Movie.query.filter(Movie.id== id)
     uid= session['user_id']
-    mid= id
+       
     return render_template('movie_details.html', movie_details=movie_details)
-
+    
 
 @app.route('/logout')
 def logout():
@@ -172,7 +172,7 @@ def recommend_movie(id):
     
     all_movie_details=list(all_movie_details[14000:])
     movie_details= movie_details.overview
-    all_movie_detail= [all_movie_details[x].overview for x in range(0,len(all_movie_details))]
+    # all_movie_detail= [all_movie_details[x].overview for x in range(0,len(all_movie_details))]
     
 
     
@@ -183,23 +183,23 @@ def recommend_movie(id):
         
     listA=[]
     # turning the strings into word embeddings
-    embedding_many=[]
-    for x in all_movie_detail:
-        try:
-            embedding_many.append(prepare(x))
-        except:
-            pass
+    # embedding_many=[]
+    # for x in all_movie_detail:
+    #     try:
+    #         embedding_many.append(prepare(x))
+    #     except:
+    #         pass
 
     
     
-    # #opening the file
-    # with open('/Users/jeffreyng/Movie_Recommender/embedding_many.pickle', 'rb') as f:
-    #     embedding_many = pickle.load(f)
+    #opening the file
+    with open('/Users/jeffreyng/Movie_Recommender/embedding_many.pickle', 'rb') as f:
+        embedding_many = pickle.load(f)
     
     
     # #pickling the file
-    with open ('embedding_many.pickle', 'wb') as f:
-        pickle.dump(embedding_many, f, 5)
+    # with open ('embedding_many.pickle', 'wb') as f:
+    #     pickle.dump(embedding_many, f, 5)
 
     #computing the dot product and cosine similarity
     
@@ -234,8 +234,8 @@ def recommend_movie(id):
 @app.route('/post-to-favorites', methods=['POST'])
 def add_favorite():
     id=session['user_id']
-    data = request.get_json(silent=False)
-    item0 = data.get('m_id')
+    data = request.get_json(force=True)
+    item0 = data['movie_id']
     # item1 = data.get('image1')
     if item0:
         user_id= id
@@ -249,7 +249,7 @@ def add_favorite():
     #      x = Favorite.query.filter(Favorite.user_id==user_id, Favorite.movie_id==movie_id)
     #      db.session.delete(x)
     #      db.session.commit()
-    return render_template("select.html", m_id =item0) 
+    return render_template("movie_details.html", m_id =item0) 
 
 
 @app.route('/post-to-watched', methods=['POST'])

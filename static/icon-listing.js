@@ -1,25 +1,22 @@
 // adding favorite movie to Favorite table
 
 //favorite button
-let button = document.querySelectorAll('img.favorited-movie-grid')
+let button = document.querySelector('img.favorited-movie')
 console.log(button)
 //content of favorite button -- movie_id
-const m_id = document.getElementById('title-detail').href
-let attach= m_id.toString().slice(22,)
-console.log(attach)
-const image= document.getElementById("favorite")
-console.log(image)
-const image1 = document.querySelector("#unfavorite")
-// const axios= require('axios')
-;
+let m_id = document.getElementsByTagName('h3')[0].id
+// let fav= document.getElementById('favorite')
+// console.log(fav)
+console.log(m_id)
 
-console.log(image.toString())
-let data ={'m_id': attach}
+// const axios= require('axios')
+
+// let data ={'movie_id':m_id}
 
 
 //axios POST request to Flask backend so that it can store to Favorite db 
 async function postFavorite() {
-let response = await axios.post("http://127.0.0.1:5000/post-to-favorites", data)
+let response = await axios.post("http://127.0.0.1:5000/post-to-favorites", {'movie_id' : m_id})
 .then(function (response){
     console.log(response)
 })
@@ -27,18 +24,25 @@ let response = await axios.post("http://127.0.0.1:5000/post-to-favorites", data)
 console.log(error)
 
 })
-console.log(response.data)
-console.log(image)
+console.log('OK')
 }
 
 function fillIcon(){
-document.getElementsByClassName("favorited-movie").id="unfavorited"
-document.getElementById("unfavorite").src="../static/images/liked.png"
+// document.getElementsByClassName("favorited-movie").id="unfavorited"
+let ele= document.getElementsByTagName("img")[1]
+console.log(ele)
+ele.src = "../static/images/liked.png"
+ele.id= 'unfavorite'
 
 }
 
+function laggard(){
+let ele1 = document.getElementsByTagName("img")[1]
 
 
+
+
+}
 //unfavorite 
 
 //axios POST request to Flask backend to delete Favorite from db
@@ -49,9 +53,13 @@ document.getElementById("unfavorite").src="../static/images/liked.png"
 //     'movieId': m_id.toString.slice(22, ), "image1": delete_fav.toString()
 // }
 
+// bttn= document.getElementById('unfavorite')
+
+// bttn.addEventListener("click", function(){try {unfillIcon()}
+// catch{err} 
 
 // async function deleteFavorite(){
-//     let response2 = await axios.post("http://127.0.0.1:5000/post-to-favorites", {data1})
+//     let response2 = await axios.post("http://127.0.0.1:5000/post-to-unfavorites", {data1})
 //     .then(function (response2){
 //         console.log(response2)
 //     })
@@ -70,22 +78,19 @@ document.getElementById("unfavorite").src="../static/images/liked.png"
 // button.innerHTML = '<img class="favorited-movie-grid" id="unfavorite" src="../static/images/favorited.png" height="25" width="25">'
 // }
 
-for (let ele of button){
-    ele.addEventListener("click", function(){postFavorite(); fillIcon()})
-    }
-
-// for (let ele of button){
-// ele.addEventListener("doubleclick", function() {deleteFavorite()})
-
-// }
-    
-    
-//     ; fillIcon()}
-
-// catch(err){deleteFavorite(); unfavoriteIcon()}})
+button.addEventListener("click", function(){postFavorite(); fillIcon()})
 
 
+// function unfillIcon() {
+//     let ele= document.getElementById("unfavorite")
+//     console.log(ele)
+//     ele.src = "../static/images/unliked.png"
+//     ele.id= 'favorite'
 
+//}
+
+
+// })
 
 
 
@@ -122,10 +127,3 @@ for (let ele of button){
 // function fillIconW(){
 //     button1.innerHTML('<img class="favorited-movie-grid" src="../static/images/watched-filled.png" height="25" width="25">')
 // }
-
-
-
-// //POST request on click on the watched icon
-// button1.addEventListener("click", function() {postWatched(); fillIconW()
-//})
-

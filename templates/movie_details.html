@@ -11,9 +11,9 @@
 
 {%for movie in movie_details%}
 
-<h3>{{movie.title}}</h3>
+<h3 class= 'movie' id="{{movie.id}}">{{movie.title}}</h3>
 <img class= "poster" src="https://image.tmdb.org/t/p/original/{{movie.image}}" width="200" height="275">
-<img class="favorited-movie" src="../static/images/unliked.png">
+<img class="favorited-movie" id="favorite" src="../static/images/unliked.png">
 <img class= "watched-movie" src="../static/images/check-eye.png" height= "40" width="40">
 <h3>Synopsis : {{movie.summary}}</h3>
 <h3>{{movie.genre1}} / {{movie.genre2}}</h3>
@@ -29,3 +29,4 @@
 <h3><a href="/intro">Start Over</a></h3>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script  src="static/icon-listing.js"></script>
+<script  src="static/script.js"></script>
