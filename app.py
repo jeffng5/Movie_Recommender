@@ -170,9 +170,9 @@ def recommend_movie(id):
     # movie_details= [movie_details[x].overview for x in range(len(movie_details))]
     all_movie_details= Movie.query.all()
     
-
+    all_movie_details=list(all_movie_details[13650:])
     movie_details= movie_details.overview
-    # all_movie_detail= [all_movie_details[x].overview for x in range(len(all_movie_details))]
+    # all_movie_detail= [all_movie_details[x].overview for x in range(13650, len(all_movie_details))]
     
 
     
@@ -197,7 +197,7 @@ def recommend_movie(id):
         embedding_many = pickle.load(f)
     
     
-    #pickling the file
+    # #pickling the file
     # with open ('embedding_many.pickle', 'wb') as f:
     #     pickle.dump(embedding_many, f, 5)
 
