@@ -16,11 +16,11 @@ from sqlalchemy import text
 
 # Movie.__table__.drop(engine)
 
-
-# db.drop_all()
-db.session.rollback()
+# db.session.rollback()
+db.drop_all()
+# db.session.rollback()
 db.create_all()
-
+db.session.commit()
 
 
 
@@ -35,13 +35,10 @@ with open('/Users/jeffreyng/Movie_Recommender/static/pickle/genres2.pickle', 'rb
     genres2 = pickle.load(f)
 with open('/Users/jeffreyng/Movie_Recommender/static/pickle/popularitys.pickle', 'rb') as f:
     popularitys = pickle.load(f)
-# with open('/Users/jeffreyng/Movie_Recommender/static/pickle/vote_averages.pickle', 'rb') as f:
-#     vote_averages = pickle.load(f)
 with open('/Users/jeffreyng/Movie_Recommender/static/pickle/subj.pickle', 'rb') as f:
     subj = pickle.load(f)
 with open('/Users/jeffreyng/Movie_Recommender/static/pickle/synopsis.pickle', 'rb') as f:
     synopsis = pickle.load(f)
-
 
 
 
@@ -57,11 +54,12 @@ for i in range(len(name)):
                     genre2= genres2[i],
                     summary= synopsis[i],
                     overview=subj[i],
-                    popularity=popularitys[i]
+                    popularity=popularitys[i],
+                    vote_average= popularitys[i]
                  )
 
     db.session.add(stuff)
-for i in range(len(subj)):
+for i in range(1, len(subj)):
     tags = Tag(
         movie_id= i,
         tag = subj[i]

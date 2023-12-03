@@ -53,7 +53,7 @@ def signup():
         db.session.add(user)
         db.session.commit()
 
-        session["user_id"] = user.username
+        session["user_id"] = user.id
 
         return redirect("/intro")
 
@@ -75,7 +75,7 @@ def login():
 
         if u:
             flash(f"Hello, {u.username}!", "success")
-            session['user_id']= u.username
+            session['user_id']= u.id
             return redirect("/intro")
 
         else:
@@ -152,27 +152,27 @@ def logout():
 
 import spacy
 import numpy as np
-nlp= spacy.load("en_core_web_sm")
+nlp= spacy.load("en_core_web_lg")
 spacy_tokenizer=nlp.tokenizer
 import pandas as pd
 
 def prep(x):
-    embedding=nlp(x).vector.reshape(96,)
+    embedding=nlp(x).vector.reshape(300,)
     return embedding
     
 def prepare(x):
-    embedding_many=nlp(x).vector.reshape(96,)
+    embedding_many=nlp(x).vector.reshape(300,)
     return embedding_many
 
 @app.route('/recommendation/<int:id>')
 def recommend_movie(id):
     movie_details= Movie.query.filter(Movie.id==id).first()
-
+    # movie_details= [movie_details[x].overview for x in range(len(movie_details))]
     all_movie_details= Movie.query.all()
     
 
-    movie_details=movie_details.overview
-    all_movie_detail= [all_movie_details[x].overview for x in range(21037)]
+    movie_details= movie_details.overview
+    # all_movie_detail= [all_movie_details[x].overview for x in range(len(all_movie_details))]
     
 
     
@@ -182,28 +182,28 @@ def recommend_movie(id):
     
         
     listA=[]
-    # #turning the strings into word embeddings
-    embedding_many=[]
-    for x in all_movie_detail[:21037]:
-        try:
-            embedding_many.append(prepare(x))
-        except:
-            pass
+    #turning the strings into word embeddings
+    # embedding_many=[]
+    # for x in all_movie_detail:
+    #     try:
+    #         embedding_many.append(prepare(x))
+    #     except:
+    #         pass
 
-    # embedding_many= embedding_many[:10]
-    #import pickle
+    
+    import pickle
     #opening the file
-    # with open('/Users/jeffreyng/Movie_Recommender/embedding_many.pickle', 'rb') as f:
-    #     embedding_many = pickle.load(f)
+    with open('/Users/jeffreyng/Movie_Recommender/embedding_many.pickle', 'rb') as f:
+        embedding_many = pickle.load(f)
     
     
     #pickling the file
-    with open ('embedding_many.pickle', 'wb') as f:
-        pickle.dump(embedding_many[:21037], f, 5)
+    # with open ('embedding_many.pickle', 'wb') as f:
+    #     pickle.dump(embedding_many, f, 5)
 
     #computing the dot product and cosine similarity
     
-    for i in range(21037):
+    for i in range(len(embedding_many)):
         listA.append(np.dot(embedding_many[i], embedding)/(np.linalg.norm(embedding_many[i])*np.linalg.norm(embedding)))
     
 
@@ -233,21 +233,23 @@ def recommend_movie(id):
 
 @app.route('/post-to-favorites', methods=['POST'])
 def add_favorite():
-    data = request.get_json(silent=True)
-    item0 = {'m_id': data.get('m_id')}
-    item = {'image': data.get('image')}
-    item1 = {'image1': data.get('image1')}
-    if item == None:
-        user_id= session['user_id']
+    id=session['user_id']
+    data = request.get_json(silent=False)
+    item0 = data.get('m_id')
+    # item1 = data.get('image1')
+    if item0:
+        user_id= id
         movie_id = item0
-        db.session.add(Favorite(user_id=user_id, movie_id=movie_id))
-    elif item1:
-        user_id= session['user_id']
-        movie_id = item0
-        x = Favorite.query.filter(Favorite.user_id==user_id, Favorite.movie_id==movie_id)
-        db.session.delete(x)
+        record=Favorite(user_id=user_id, movie_id=movie_id)
+        db.session.add(record)
         db.session.commit()
-    return render_template("select.html", m_id =item) 
+    # elif item1:
+    #      user_id= session['user_id']
+    #      movie_id = item0
+    #      x = Favorite.query.filter(Favorite.user_id==user_id, Favorite.movie_id==movie_id)
+    #      db.session.delete(x)
+    #      db.session.commit()
+    return render_template("select.html", m_id =item0) 
 
 
 @app.route('/post-to-watched', methods=['POST'])
