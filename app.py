@@ -234,5 +234,31 @@ def recommend_movie(id):
 @app.route('/post-to-favorites', methods=['POST'])
 def add_favorite():
     data = request.get_json(silent=True)
-    item = {'m_id': data.get('m_id')}
+    item0 = {'m_id': data.get('m_id')}
+    item = {'image': data.get('image')}
+    item1 = {'image1': data.get('image1')}
+    if item == None:
+        user_id= session['user_id']
+        movie_id = item0
+        db.session.add(Favorite(user_id=user_id, movie_id=movie_id))
+    else:
+        user_id= session['user_id']
+        movie_id = item0
+        x = Favorite.query.filter(Favorite.user_id==user_id, Favorite.movie_id==movie_id)
+        db.session.delete(x)
+        db.session.commit()
     return render_template("select.html", m_id =item) 
+
+
+@app.route('/post-to-watched', methods=['POST'])
+def add_watched():
+    data = request.get_json(silent=True)
+    item ={'m_id': data.get('m_id_watched')}
+
+    user_id= session['user_id']
+    movie_id = data.get('m_id_watched')
+    record=  Favorite(user_id=user_id, movie_id=movie_id)
+    db.session.add(record)
+    db.session.commit()
+
+    return render_template("select.html", item=item )
