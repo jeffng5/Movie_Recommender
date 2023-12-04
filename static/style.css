@@ -114,12 +114,10 @@ a {
 
  
 
-/* div.icon{
- height:30px;
+div.grid-item + div.grid-item {
 
-} */
+margin-right: 30px;
+margin-bottom: 30px;
+margin-top: 30px;
 
-/* p.title{
-width: 300px;
-
-} */
+}

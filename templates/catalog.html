@@ -13,7 +13,7 @@
     {{form.hidden_tag()}}
     {% for field in form
         if field.widget.input_type != 'hidden' %}
-<p>{{field}}{{field.label}}</p>
+<p class="genre">{{field}}{{field.label}}</p>
 {%endfor%}
 <button class="bttn">Select criteria</button>
 </form>

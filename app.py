@@ -252,15 +252,15 @@ def add_favorite():
     return render_template("movie_details.html", m_id =item0) 
 
 
-@app.route('/post-to-watched', methods=['POST'])
-def add_watched():
-    data = request.get_json(silent=True)
-    item ={'m_id': data.get('m_id_watched')}
+@app.route('/post-to-unfavorites', methods=['POST'])
+def unfavorite_movie():
+    data = request.get_json(force=True)
+    item = data['movie_id']
 
-    user_id= session['user_id']
-    movie_id = data.get('m_id_watched')
-    record=  Favorite(user_id=user_id, movie_id=movie_id)
-    db.session.add(record)
-    db.session.commit()
+    if item:
+        user_id= session['user_id']
+        movie_id = item
+        Favorite.query.filter(Favorite.movie_id == movie_id, Favorite.user_id == user_id).delete()
+        db.session.commit()
 
     return render_template("select.html", item=item )
