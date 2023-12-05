@@ -85,9 +85,10 @@ def login():
 
 @app.route('/intro', methods=['GET', 'POST'])
 def intro():
-
+    id = session['user_id']
+    identify = User.query.filter_by(id=id)
     # hello=ast.literal_eval(repr(session['user_id']))
-    return render_template('intro.html')
+    return render_template('intro.html', identify=identify)
 
 
 @app.route('/search', methods=['GET', 'POST'])
@@ -220,12 +221,6 @@ def recommend_movie(id):
     for num in idx:
         sorted_movies.append(all_movie_details[num])
         no_duplicates=sorted_movies
-    
-
-
-
-
-    
    
     return render_template('recommend.html', no_duplicates= no_duplicates, values=values)
                         #    movie_details=movie_details, sorted_movies=sorted_movies, values=values)

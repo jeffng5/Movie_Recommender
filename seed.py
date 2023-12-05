@@ -16,8 +16,8 @@ from sqlalchemy import text
 
 # Movie.__table__.drop(engine)
 
-# db.session.rollback()
-db.drop_all()
+
+db.engine.execute('DROP SCHEMA public CASCADE; CREATE SCHEMA public;') # clean reset the database 
 # db.session.rollback()
 db.create_all()
 db.session.commit()
@@ -55,7 +55,7 @@ for i in range(len(name)):
                     summary= synopsis[i],
                     overview=subj[i],
                     popularity=popularitys[i],
-                    vote_average= popularitys[i]
+        
                  )
 
     db.session.add(stuff)

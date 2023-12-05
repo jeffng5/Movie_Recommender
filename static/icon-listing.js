@@ -70,13 +70,13 @@ async function deleteFavorite(){
     }
 
 function unfillIcon() {
-        let ele= document.getElementById("unfavorite")
+        let ele= document.getElementByTagName("img")[1].classList.toggle("yellow")
         console.log(ele)
         ele.src = "../static/images/unliked.png"
         ele.id= 'favorite'
 }
 
-button.addEventListener('doubleclick', function(){ deleteFavorite(); unfillIcon()})
+button.addEventListener('mousedown', function(){ deleteFavorite(); unfillIcon()})
 
 // function unfavoriteIcon(){
 // button.innerHTML = '<img class="favorited-movie-grid" id="unfavorite" src="../static/images/favorited.png" height="25" width="25">'
