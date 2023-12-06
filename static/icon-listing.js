@@ -13,20 +13,6 @@ console.log(m_id)
 
 // let data ={'movie_id':m_id}
 
-
-//axios POST request to Flask backend so that it can store to Favorite db 
-async function postFavorite() {
-let response = await axios.post("http://127.0.0.1:5000/post-to-favorites", {'movie_id' : m_id})
-.then(function (response){
-    console.log(response)
-})
-.catch(function (error){
-console.log(error)
-
-})
-console.log('OK')
-}
-
 function fillIcon(){
 // document.getElementsByClassName("favorited-movie").id="unfavorited"
 let ele= document.getElementsByTagName("img")[1]
@@ -40,7 +26,7 @@ function laggard(){
 let ele1 = document.getElementsByTagName("img")[1]
 }
 
-button.addEventListener("click", function(){postFavorite(); fillIcon()})
+
 //unfavorite 
 
 //axios POST request to Flask backend to delete Favorite from db
@@ -56,45 +42,59 @@ button.addEventListener("click", function(){postFavorite(); fillIcon()})
 // bttn.addEventListener("click", function(){try {unfillIcon()}
 // catch{err} 
 
-async function deleteFavorite(){
-    let response2 = await axios.post("http://127.0.0.1:5000/post-to-unfavorites", {'movie_id' : m_id})
-    .then(function (response2){
-        console.log(response2)
-    })
-    .catch(function (error){
-    console.log(error)
+
+
+    // .catch(function (error){
+    // console.log(error)
     
-    })
-    console.log(response2.data)
-    console.log(image)
-    }
+    // })
+    // console.log(response2.data)
+    // console.log(image)
+    // }
 
 function unfillIcon() {
-        let ele= document.getElementByTagName("img")[1].classList.toggle("yellow")
-        console.log(ele)
-        ele.src = "../static/images/unliked.png"
-        ele.id= 'favorite'
+        let ele2= document.getElementsByTagName("img")[1]
+        console.log(ele2)
+        ele2.src = "../static/images/unliked.png"
+        ele2.id= 'favorite'
 }
 
-button.addEventListener('mousedown', function(){ deleteFavorite(); unfillIcon()})
+async function deleteFavorite(){
+
+    let response2 = await axios.post("http://127.0.0.1:5000/post-to-unfavorites", {'movie_id' : m_id})
+        console.log(response2)}
+// button.addEventListener('dblclick', function(){ deleteFavorite(); unfillIcon()})
 
 // function unfavoriteIcon(){
 // button.innerHTML = '<img class="favorited-movie-grid" id="unfavorite" src="../static/images/favorited.png" height="25" width="25">'
 // }
 
-
-
+//axios POST request to Flask backend so that it can store to Favorite db 
 
 //}
 
 
 // })
 
+async function postFavorite(){
+    let resp = await axios.post("http://127.0.0.1:5000/post-to-favorites", {'movie_id' : m_id})
+    console.log(resp)}
+//     try {
+
+//     const p1= fillIcon();
+//     const p2 = deleteFavorite();
+//     const p3 = unfillIcon() 
+//     await Promise.all([p1,p2,p3])
+// } 
+
+// finally{
+// console.log('done!')
 
 
 
+button.addEventListener("click", async()=> {postFavorite() ; fillIcon()})
 
-
+button.addEventListener('dblclick', async()=> {deleteFavorite(); unfillIcon()})
 
 
 

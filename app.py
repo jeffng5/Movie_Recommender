@@ -83,11 +83,11 @@ def login():
             
     return render_template('login.html', form=form)
 
-@app.route('/intro', methods=['GET', 'POST'])
+@app.route('/intro', methods=['GET'])
 def intro():
+    
     id = session['user_id']
-    identify = User.query.filter_by(id=id)
-    # hello=ast.literal_eval(repr(session['user_id']))
+    identify = User.query.filter_by(id=id).first()
     return render_template('intro.html', identify=identify)
 
 
