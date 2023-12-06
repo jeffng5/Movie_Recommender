@@ -56,16 +56,16 @@ color: gray;
 }
 
 img.watched-movie{
-position: absolute;
-top: 97px;
-left: 215px;
+position: relative;
+top: 0px;
+left: 15px;
 color: gray;
 }
 
 img.favorited-movie-grid{
   position: relative;
   top: -45px;
-  left: 43px;
+  left: 30px;
   color: gray;
   
   }
@@ -73,7 +73,7 @@ img.favorited-movie-grid{
 img.watched-movie-grid{
   position: relative;
   top: -15px;
-  left: 115px;
+  left: 2px;
   color: gray;
   }
 
@@ -119,5 +119,11 @@ div.grid-item + div.grid-item {
 margin-right: 30px;
 margin-bottom: 30px;
 margin-top: 30px;
+
+}
+
+div.columnar{
+float: left;
+width: 33%;
 
 }

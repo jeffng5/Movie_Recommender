@@ -15,17 +15,18 @@
 {%for movie in list_of_movies%}
 
 
-  
+<div class="columnar">
 <a id="title-detail" href="/{{movie.id}}"><p class="title">{{movie.title}}</p></a> 
 <img class= "poster" src="https://image.tmdb.org/t/p/original/{{movie.image}}" width="70" height="75">  
 <!-- <img class="favorited-movie-grid" id= "favorite" src="../static/images/unliked.png"> 
-<img class= "watched-movie-grid" src="../static/images/check-eye.png" height = "25" width= '25'>  -->
-
+<img class= "watched-movie-grid" src="../static/images/check-eye.png" height = "25" width= '25'> -->
+</div>
 {%endfor%}
-</body>
 
-{{m_id}}
-{{item}}
+
+
+
+</body>
 
 <p><h3><a href="/intro">Start Over</a></h3></p>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>

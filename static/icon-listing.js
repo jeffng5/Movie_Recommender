@@ -1,20 +1,15 @@
-// adding favorite movie to Favorite table
 
-//favorite button
-let button = document.querySelector('img.favorited-movie')
-console.log(button)
-//content of favorite button -- movie_id
 let m_id = document.getElementsByTagName('h3')[0].id
 // let fav= document.getElementById('favorite')
 // console.log(fav)
-console.log(m_id)
+
 
 // const axios= require('axios')
 
 // let data ={'movie_id':m_id}
 
 function fillIcon(){
-// document.getElementsByClassName("favorited-movie").id="unfavorited"
+
 let ele= document.getElementsByTagName("img")[1]
 console.log(ele)
 ele.src = "../static/images/liked.png"
@@ -22,35 +17,9 @@ ele.id= 'unfavorite'
 
 }
 
-function laggard(){
-let ele1 = document.getElementsByTagName("img")[1]
-}
 
 
-//unfavorite 
-
-//axios POST request to Flask backend to delete Favorite from db
-
-// let delete_m_id = document.getElementById('title-detail').href
-// let delete_fav = document.getElementById('unfavorite')
-// let data1= {
-//     'movieId': m_id.toString.slice(22, ), "image1": delete_fav.toString()
-// }
-
-// bttn= document.getElementById('unfavorite')
-
-// bttn.addEventListener("click", function(){try {unfillIcon()}
-// catch{err} 
-
-
-
-    // .catch(function (error){
-    // console.log(error)
     
-    // })
-    // console.log(response2.data)
-    // console.log(image)
-    // }
 
 function unfillIcon() {
         let ele2= document.getElementsByTagName("img")[1]
@@ -63,32 +32,15 @@ async function deleteFavorite(){
 
     let response2 = await axios.post("http://127.0.0.1:5000/post-to-unfavorites", {'movie_id' : m_id})
         console.log(response2)}
-// button.addEventListener('dblclick', function(){ deleteFavorite(); unfillIcon()})
 
-// function unfavoriteIcon(){
-// button.innerHTML = '<img class="favorited-movie-grid" id="unfavorite" src="../static/images/favorited.png" height="25" width="25">'
-// }
-
-//axios POST request to Flask backend so that it can store to Favorite db 
-
-//}
-
-
-// })
 
 async function postFavorite(){
     let resp = await axios.post("http://127.0.0.1:5000/post-to-favorites", {'movie_id' : m_id})
-    console.log(resp)}
-//     try {
+    }
 
-//     const p1= fillIcon();
-//     const p2 = deleteFavorite();
-//     const p3 = unfillIcon() 
-//     await Promise.all([p1,p2,p3])
-// } 
+const button = document.querySelector('img.favorited-movie')
 
-// finally{
-// console.log('done!')
+console.log(button)
 
 
 
@@ -98,30 +50,41 @@ button.addEventListener('dblclick', async()=> {deleteFavorite(); unfillIcon()})
 
 
 
-
-
-
-
-
-//POST request on click of icon
-// button.addEventListener("click", function(){postFavorite(); fillIcon()})
-
-
-
-//adding watched movie to Watched table 
-
-//getting the movie id data 
-// const m_id_watched = document.getElementById('title-detail')
-
+let m_id_watched = document.getElementsByTagName('h3')[0].id
 // //naming the button
-// const button1 = document.getElementsByClassName('watched-movie-grid')
-
+const button1 = document.querySelector('img.watched-movie')
+console.log(button1)
 // //axios POST request to Flask backend to store to Watched db
-// async function postWatched(){
-// let resp = await axios.post("http://127.0.0.1:5000/post-to-watched", {m_id_watched})
-// console.log(resp.data)
-// }
+async function postWatched(){
+    let resp3 = await axios.post("http://127.0.0.1:5000/post-to-watched", {"movie_id" :m_id_watched})
 
-// function fillIconW(){
-//     button1.innerHTML('<img class="favorited-movie-grid" src="../static/images/watched-filled.png" height="25" width="25">')
-// }
+}
+
+function fillIconW(){
+    let watchIcon = document.getElementsByTagName('img')[2]
+    watchIcon.src = "../static/images/watched-filled.png"
+    watchIcon.id= "watched"
+}
+button1.addEventListener("click", function(){postWatched(); fillIconW()})
+
+async function postUnwatched(){
+ let resp4 = await axios.post("http://127.0.0.1:5000/post-to-unwatched", {"movie_id": m_id_watched})
+
+}
+
+function unfillIconW(){    
+    let watchIconU = document.getElementsByTagName('img')[2]
+    watchIconU.src = "../static/images/check-eye.png"
+    watchIconU.id = "unwatched"
+}
+
+button1.addEventListener("dblclick", function(){postUnwatched(); unfillIconW() })
+
+
+async function getFavorited(){
+    let resp5 = await axios.get("http://127.0.0.1:5000/search")
+    console.log(resp5)
+    data = json.dumps(json_result)
+    console.log(data)
+
+} 

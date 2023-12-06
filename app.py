@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, redirect, session
+from flask import Flask, render_template, request, flash, redirect, session, jsonify
 # from flask_session import Session
 # from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
@@ -90,25 +90,38 @@ def intro():
     identify = User.query.filter_by(id=id).first()
     return render_template('intro.html', identify=identify)
 
+from sqlalchemy.orm import class_mapper
 
-@app.route('/search', methods=['GET', 'POST'])
+def to_dict(model):
+    columns = [c.key for c in class_mapper(model.__class__).columns]
+    return dict((c, getattr(model, c)) for c in columns)
+
+@app.route('/search', methods=['GET','POST'])
 def search_movie():
+    # jsonFav= Favorite.query.filter(Favorite.user_id == session['user_id']).all()
+    # result_dict =[to_dict(r) for r in jsonFav]
+    # json_result = json.dumps(result_dict)
+
     form = MovieForm()
     if form.validate_on_submit():
-        term = form.title.data
-        list_of_movies = Movie.query.filter(Movie.title.ilike("%" + term + "%")).order_by(Movie.popularity.desc())
         
+        watched_movies = Movie.query.filter(Movie.id==Watched.movie_id, Watched.user_id==session['user_id']).all()
+        favorited_movies = Movie.query.filter(Movie.id==Favorite.movie_id, Watched.user_id==session['user_id']).all()
+        term = form.title.data
+        list_of_movies = Movie.query.filter(Movie.title.ilike("%" + term + "%")).order_by(Movie.popularity.desc())    
         u_id= session['user_id']
 
         
         # favorite= Favorite(user_id=u_id, movie_id=m_id)
         # db.session.add(favorite)
         # db.session.commit()
-        
-        return render_template("select.html", list_of_movies= list_of_movies)
+    
+        return render_template("select.html", list_of_movies= list_of_movies, favorited_movies= favorited_movies, watched_movies= watched_movies)
     else:
         return render_template("search.html", form = form) 
-    
+
+
+
 
 @app.route('/catalog', methods=['GET', 'POST'])
 def browse():
@@ -258,4 +271,48 @@ def unfavorite_movie():
         Favorite.query.filter(Favorite.movie_id == movie_id, Favorite.user_id == user_id).delete()
         db.session.commit()
 
-    return render_template("select.html", item=item )
+    return render_template("movie_details.html", item=item )
+
+
+@app.route("/post-to-unwatched", methods=['POST'])
+def unwatch_movie():
+    data = request.get_json(force=True)
+    item = data['movie_id']
+
+    if item:
+        user_id = session['user_id']
+        movie_id=item
+        print(item)
+        Watched.query.filter(Watched.movie_id == movie_id, Watched.user_id == user_id).delete()
+        db.session.commit()
+    
+    return render_template("movie_details.html")
+
+@app.route("/post-to-watched", methods=['POST'])
+def watch_movie():
+    data = request.get_json(force=True)
+   
+    item = data['movie_id']
+    print(item)
+    if item:
+        user_id = session['user_id']
+        movie_w = item
+        
+        watched_movie=Watched(user_id = user_id, movie_id = movie_w)
+        db.session.add(watched_movie)
+        db.session.commit()
+    
+    return render_template('movie_details.html')
+
+
+@app.route('/favorited')
+def get_favorited():
+    favorited_movies = Movie.query.filter(Movie.id==Favorite.movie_id, Watched.user_id==session['user_id']).all()
+    return render_template('favorited.html', favorited_movies=favorited_movies)
+    
+    
+    
+@app.route('/watched')
+def get_watched():    
+    watched_movies = Movie.query.filter(Movie.id==Watched.movie_id, Watched.user_id==session['user_id']).all()
+    return render_template('watched.html', watched_movies=watched_movies)
