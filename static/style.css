@@ -49,18 +49,26 @@ button.bttn {
 
 img.favorited-movie{
 position: relative;
-top: -240px;
-left: 9px; 
+top: -230px;
+left: 20px; 
 color: gray;
 
 }
 
 img.watched-movie{
 position: relative;
-top: 0px;
-left: 15px;
+top: -250px;
+left: 218px;
 color: gray;
 }
+
+img.watched-movie-1 {
+  position: relative;
+  top: -10px;
+  left: 18px;
+  color: gray;
+  }
+
 
 img.favorited-movie-grid{
   position: relative;
@@ -69,7 +77,13 @@ img.favorited-movie-grid{
   color: gray;
   
   }
-  
+img.favorited-movie-grid-1{
+    position: relative;
+    top: -10px;
+    left: 20px;
+    color: gray;
+    
+    }
 img.watched-movie-grid{
   position: relative;
   top: -15px;
