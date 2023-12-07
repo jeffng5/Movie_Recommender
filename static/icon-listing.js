@@ -68,9 +68,8 @@ function fillIconW(){
 button1.addEventListener("click", function(){postWatched(); fillIconW()})
 
 async function postUnwatched(){
- let resp4 = await axios.post("http://127.0.0.1:5000/post-to-unwatched", {"movie_id": m_id_watched})
-
-}
+    let resp4 = await axios.post("http://127.0.0.1:5000/post-to-unwatched", {"movie_id": m_id_watched})
+   }
 
 function unfillIconW(){    
     let watchIconU = document.getElementsByTagName('img')[2]
@@ -81,10 +80,6 @@ function unfillIconW(){
 button1.addEventListener("dblclick", function(){postUnwatched(); unfillIconW() })
 
 
-async function getFavorited(){
-    let resp5 = await axios.get("http://127.0.0.1:5000/search")
-    console.log(resp5)
-    data = json.dumps(json_result)
-    console.log(data)
 
-} 
+
+

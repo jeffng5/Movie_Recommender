@@ -305,14 +305,42 @@ def watch_movie():
     return render_template('movie_details.html')
 
 
-@app.route('/favorited')
+@app.route('/favorited-watched')
 def get_favorited():
     favorited_movies = Movie.query.filter(Movie.id==Favorite.movie_id, Watched.user_id==session['user_id']).all()
-    return render_template('favorited.html', favorited_movies=favorited_movies)
-    
-    
-    
-@app.route('/watched')
-def get_watched():    
     watched_movies = Movie.query.filter(Movie.id==Watched.movie_id, Watched.user_id==session['user_id']).all()
-    return render_template('watched.html', watched_movies=watched_movies)
+    return render_template('favorited-watched.html', favorited_movies=favorited_movies,watched_movies=watched_movies) 
+    
+    
+   
+@app.route('/get-rid-of-watched', methods=['POST'])
+def delete_from_watched_list():
+    data = request.get_json(force=True)
+    item = data['movie_id']
+
+    if item:
+        user_id = session['user_id']
+        movie_id=item
+        print(item)
+        Watched.query.filter(Watched.movie_id == movie_id, Watched.user_id == user_id).delete()
+        db.session.commit()
+    
+    return render_template("favorited-watched.html")
+
+
+
+
+
+
+@app.route('/get-rid-of-favorites', methods=['POST'])
+def delete_from_favorite_list():
+    data = request.get_json(force=True)
+    item = data['movie_id']
+
+    if item:
+        user_id= session['user_id']
+        movie_id = item
+        Favorite.query.filter(Favorite.movie_id == movie_id, Favorite.user_id == user_id).delete()
+        db.session.commit()
+
+    return render_template("favorited-watched.html")
