@@ -48,7 +48,7 @@ def signup():
     if form.validate_on_submit():
         username=form.username.data
         password=form.password.data
-        email=form.password.data
+        email=form.email.data
         
         user=User.register(username, password, email)
         db.session.add(user)
@@ -75,7 +75,6 @@ def login():
                                  pwd)
 
         if u:
-            flash(f"Hello, {u.username}!", "success")
             session['user_id']= u.id
             return redirect("/intro")
 
