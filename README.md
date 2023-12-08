@@ -21,13 +21,13 @@ The user flow starts with a sign up/login which requires a unique username and p
 The API is the tmdb API using imdbcode to reach each movie's endpoint. 
 
 TECHNOLOGY STACK: 
-    * HTML5/ CSS
-    * Flask
-    * Javascript
-    * Jupyter Notebook for API calls
-    * Axios
-    * SpaCY
-    * Python3.9 which includes pandas, numpy, pickle
+* HTML5/ CSS
+* Flask
+* Javascript
+* Jupyter Notebook for API calls
+* Axios
+* SpaCY
+* Python3.9 which includes pandas, numpy, pickle
 
 The app needs several downloads that may not be installed for the normal user:
     * SpaCY
