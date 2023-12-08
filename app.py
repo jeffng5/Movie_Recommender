@@ -56,7 +56,6 @@ def signup():
 
         session["user_id"] = user.id
         if user.id:
-            g.user=user.id
             return redirect("/intro")
 
     else:
@@ -76,7 +75,6 @@ def login():
                                  pwd)
 
         if u:
-            g.user=u.id
             flash(f"Hello, {u.username}!", "success")
             session['user_id']= u.id
             return redirect("/intro")
@@ -239,9 +237,9 @@ def recommend_movie(id):
 
 @app.route('/post-to-favorites', methods=['POST'])
 def add_favorite():
-    if not g.user:
-        flash("Access unauthorized.", "danger")
-        return redirect("/")
+    # if not g.user:
+    #     flash("Access unauthorized.", "danger")
+    #     return redirect("/")
 
     id=session['user_id']
     data = request.get_json(force=True)
@@ -285,8 +283,7 @@ def unwatch_movie():
         user_id = session['user_id']
         movie_id=item
         print(item)
-        watched= Favorite.query.filter(Movie.id==Favorite.movie_id)
-        Watched.query.filter(user_id==User.id).watched.remove(watched)
+        Favorite.query.filter(Favorite.movie_id==movie_id , Favorite.user_id==user_id).delete()
         db.session.commit()
     
     return render_template("movie_details.html")
