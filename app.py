@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, redirect, session, jsonify
+from flask import Flask, render_template, request, flash, redirect, session, jsonify, g, abort
 # from flask_session import Session
 # from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
@@ -37,6 +37,7 @@ db.create_all()
 
 @app.route('/')
 def home():
+
     return render_template('home.html')
 
 @app.route('/signup', methods=["GET", "POST"])
@@ -54,8 +55,9 @@ def signup():
         db.session.commit()
 
         session["user_id"] = user.id
-
-        return redirect("/intro")
+        if user.id:
+            g.user=user.id
+            return redirect("/intro")
 
     else:
         return render_template('signup.html', form=form)
@@ -74,6 +76,7 @@ def login():
                                  pwd)
 
         if u:
+            g.user=u.id
             flash(f"Hello, {u.username}!", "success")
             session['user_id']= u.id
             return redirect("/intro")
@@ -85,22 +88,19 @@ def login():
 
 @app.route('/intro', methods=['GET'])
 def intro():
-    
+    id=session['user_id']
+    if session['user_id'] == None:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
     id = session['user_id']
     identify = User.query.filter_by(id=id).first()
     return render_template('intro.html', identify=identify)
 
-from sqlalchemy.orm import class_mapper
 
-def to_dict(model):
-    columns = [c.key for c in class_mapper(model.__class__).columns]
-    return dict((c, getattr(model, c)) for c in columns)
 
 @app.route('/search', methods=['GET','POST'])
 def search_movie():
-    # jsonFav= Favorite.query.filter(Favorite.user_id == session['user_id']).all()
-    # result_dict =[to_dict(r) for r in jsonFav]
-    # json_result = json.dumps(result_dict)
+   
 
     form = MovieForm()
     if form.validate_on_submit():
@@ -129,13 +129,9 @@ def browse():
     form = CatalogForm()
     if form.validate_on_submit():
         genres = form.genres.data
-        #popularitys= float(form.popularitys.data)
-        # vote_averages=form.vote_average.data 
-    
-        #list_of_movies_by_pop = Movie.query.filter(Movie.popularity <= popularitys)
         list_of_movies_by_genres = Movie.query.filter_by(genre1 = genres).order_by(Movie.popularity.desc())
         list_of_movies_by_genres1 = Movie.query.filter(Movie.genre2 == genres).order_by(Movie.popularity.desc())
-        # list_of_movies_by_vote_averages = Movie.query.filter(Movie.vote_average > vote_averages)
+        
         return render_template('last_page.html', list_of_movies_by_genres=list_of_movies_by_genres,
             list_of_movies_by_genres1= list_of_movies_by_genres1)
             #list_of_movies_by_pop= list_of_movies_by_pop) 
@@ -151,10 +147,12 @@ def browse():
 
 @app.route("/<int:id>")
 def single_movie(id):
-    movie_details= Movie.query.filter(Movie.id== id)
-    uid= session['user_id']
-       
+    user_id = session['user_id']
+    movie_details= Movie.query.filter(Movie.id==id)
     return render_template('movie_details.html', movie_details=movie_details)
+    if Favorite.query.filter(Favorite.movie_id==id, Favorite.user_id==user_id) :
+        movie_details = Movie.query.filter(Movie.id==id, Favorite.user_id==user_id)
+        return render_template('movie_details_liked.html', movie_details=movie_details)
     
 
 @app.route('/logout')
@@ -184,9 +182,9 @@ def recommend_movie(id):
     # movie_details= [movie_details[x].overview for x in range(len(movie_details))]
     all_movie_details= Movie.query.all()
     
-    all_movie_details=list(all_movie_details[14000:])
+    total_movie_details=list(all_movie_details[14000:])
     movie_details= movie_details.overview
-    # all_movie_detail= [all_movie_details[x].overview for x in range(0,len(all_movie_details))]
+    # total = [total_movie_details[x].overview for x in range(0,len(total_movie_details))]
     
 
     
@@ -196,9 +194,9 @@ def recommend_movie(id):
     
         
     listA=[]
-    # turning the strings into word embeddings
+    #turning the strings into word embeddings
     # embedding_many=[]
-    # for x in all_movie_detail:
+    # for x in total:
     #     try:
     #         embedding_many.append(prepare(x))
     #     except:
@@ -211,14 +209,14 @@ def recommend_movie(id):
         embedding_many = pickle.load(f)
     
     
-    # #pickling the file
+    #pickling the file
     # with open ('embedding_many.pickle', 'wb') as f:
     #     pickle.dump(embedding_many, f, 5)
 
     #computing the dot product and cosine similarity
     
     for i in range(len(embedding_many)):
-        listA.append(np.dot(embedding_many[i], embedding)/(np.linalg.norm(embedding_many[i])*np.linalg.norm(embedding)))
+        listA.append(np.dot(embedding_many[i], embedding)/(np.sqrt(np.sum(np.square(embedding_many[i])))*np.sqrt(np.sum(np.square(embedding)))))
     
 
     df0= pd.Series(listA)
@@ -226,21 +224,25 @@ def recommend_movie(id):
     frames=[df1, df0]
     work= pd.concat(frames, axis=1)
     work['cos_sim']=listA
-    # #sorting the cosine similarities
-    idx=work['cos_sim'].sort_values(ascending=False)[1:11].index 
+    #sorting the cosine similarities
+    idx=work['cos_sim'].sort_values(ascending=False)[0:11].index 
     values= work['cos_sim'][idx]
 
     sorted_movies=[]
     for num in idx:
-        sorted_movies.append(all_movie_details[num])
-        no_duplicates=sorted_movies
+        sorted_movies.append(total_movie_details[num])
+    
    
-    return render_template('recommend.html', no_duplicates= no_duplicates, values=values)
+    return render_template('recommend.html', sorted_movies=sorted_movies, values=values, idx=idx)
                         #    movie_details=movie_details, sorted_movies=sorted_movies, values=values)
 
 
 @app.route('/post-to-favorites', methods=['POST'])
 def add_favorite():
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
     id=session['user_id']
     data = request.get_json(force=True)
     item0 = data['movie_id']
@@ -283,7 +285,8 @@ def unwatch_movie():
         user_id = session['user_id']
         movie_id=item
         print(item)
-        Watched.query.filter(Watched.movie_id == movie_id, Watched.user_id == user_id).delete()
+        watched= Favorite.query.filter(Movie.id==Favorite.movie_id)
+        Watched.query.filter(user_id==User.id).watched.remove(watched)
         db.session.commit()
     
     return render_template("movie_details.html")
@@ -307,40 +310,57 @@ def watch_movie():
 
 @app.route('/favorited-watched')
 def get_favorited():
-    favorited_movies = Movie.query.filter(Movie.id==Favorite.movie_id, Watched.user_id==session['user_id']).all()
-    watched_movies = Movie.query.filter(Movie.id==Watched.movie_id, Watched.user_id==session['user_id']).all()
-    return render_template('favorited-watched.html', favorited_movies=favorited_movies,watched_movies=watched_movies) 
+    id=session['user_id']
+    data=request.get_json(force=True)
+    item= data['movie_id']
+    
+    
+    
+    fav_movies= Favorite.query.filter(Favorite.user_id==id)
+    thing = Movie.query.filter(Movie.id==Favorite.movie_id)
+    fav_movies= [fav_movies in thing]
+    watched_movies = Favorite.query.filter(Favorite.user_id==id)
+    thang = Movie.query.filter(Movie.id==Favorite.movie_id)
+    watched_movies= [watched_movies in thang]
+    
+    return render_template('favorited-watched.html', fav_movies=fav_movies, watched_movies=watched_movies) 
     
     
    
-@app.route('/get-rid-of-watched', methods=['POST'])
-def delete_from_watched_list():
-    data = request.get_json(force=True)
-    item = data['movie_id']
+# @app.route('/get-rid-of-watched', methods=['POST'])
+# def delete_from_watched_list():
+#     data = request.get_json(force=True)
+#     item = data['movie_id']
 
-    if item:
-        user_id = session['user_id']
-        movie_id=item
-        print(item)
-        Watched.query.filter(Watched.movie_id == movie_id, Watched.user_id == user_id).delete()
-        db.session.commit()
+#     if item:
+#         user_id = session['user_id']
+#         movie_id=item
+#         print(item)
+#         Watched.query.filter(Watched.movie_id == movie_id, Watched.user_id == user_id).delete()
+#         db.session.commit()
     
-    return render_template("favorited-watched.html")
+#     return render_template("favorited-watched.html")
 
 
 
 
 
 
-@app.route('/get-rid-of-favorites', methods=['POST'])
-def delete_from_favorite_list():
-    data = request.get_json(force=True)
-    item = data['movie_id']
+# @app.route('/get-rid-of-favorites', methods=['POST'])
+# def delete_from_favorite_list():
+#     data = request.get_json(force=True)
+#     item = data['movie_id']
+#     print(item)
+#     if item:
+#         user_id= session['user_id']
+#         movie_id = item
+#         show = db.session.query(Movie.id, Favorite.movie_id, Favorite.user_id).join(Favorite).all()
+#         # print(show.query.filter(Favorite.user_id==user_id, Favorite.movie_id==item).delete())
+#         print(show)
+        
+#         Favorite.query.filter(Favorite.movie_id == movie_id, Favorite.user_id == user_id).delete()
+#         db.session.commit()
 
-    if item:
-        user_id= session['user_id']
-        movie_id = item
-        Favorite.query.filter(Favorite.movie_id == movie_id, Favorite.user_id == user_id).delete()
-        db.session.commit()
+#     return render_template("favorited-watched.html")
 
-    return render_template("favorited-watched.html")
+

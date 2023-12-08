@@ -4,7 +4,7 @@
 {%block content%}
 
 
-{%for movie in no_duplicates%}
+{%for movie in sorted_movies%}
 <div>
 <img class= "poster" src="https://image.tmdb.org/t/p/original/{{movie.image}}" width="200" height="275">
 <h3><a id="title-detail" href="/{{movie.id}}">{{movie.title}}</a></h3>
@@ -17,5 +17,8 @@
 </div>
 {{movie_detail}}
 
+{%for item in stuff%}
+{{item}}
+{%endfor%}
 <h3><a class= "reset" href='/intro'>Start Over</a></h3>
 {%endblock%} 

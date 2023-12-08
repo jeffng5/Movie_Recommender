@@ -82,4 +82,7 @@ button1.addEventListener("dblclick", function(){postUnwatched(); unfillIconW() }
 
 
 
+async function deleteFavoriteFromList(){
 
+    let response2 = await axios.post("http://127.0.0.1:5000/favorited-watched", {'movie_id' : m_id})
+        console.log(response2)}

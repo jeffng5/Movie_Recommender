@@ -12,6 +12,29 @@ def connect_db(app):
     db.app = app
     db.init_app(app)
 
+class Favorite(db.Model):
+
+    __tablename__ = 'favorites'
+
+    id= db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+    user_id= db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'), nullable=False)
+
+
+    movie_f = db.relationship('Movie', cascade="all,delete", backref= 'favorites')
+    favorite = db.relationship("User", cascade="all,delete", backref="favorites")
+
+class Watched(db.Model):
+
+    __tablename__= 'watcheds'
+
+    id= db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+    user_id= db.Column(db.Integer,db.ForeignKey('users.id'), nullable=False)
+    movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'), nullable=False)
+
+
+    movie_w = db.relationship('Movie', cascade="all,delete", backref= 'watcheds')
+    watched = db.relationship('User', cascade='all,delete', backref= 'watcheds')
 
 class Movie(db.Model):
 
@@ -48,7 +71,9 @@ class User(db.Model):
     password=db.Column(db.Text, nullable=False)
     email= db.Column(db.String, nullable=True)
 
-
+    join= db.relationship('Movie', secondary='favorites', backref= 'fav_movie_by_user')
+    join1= db.relationship('Movie', secondary = 'watcheds', backref= 'watched_movie_by_user')
+    
     # start_register
     @classmethod
     def register(cls, username, pwd, email):
@@ -73,29 +98,9 @@ class User(db.Model):
 
    
 
-class Favorite(db.Model):
-
-    __tablename__ = 'favorites'
-
-    id= db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    user_id= db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'), nullable=False)
 
 
-    movie_f = db.relationship('Movie', cascade="all,delete", backref= 'favorites')
-    favorite = db.relationship("User", cascade="all,delete", backref="favorites")
 
-class Watched(db.Model):
-
-    __tablename__= 'watcheds'
-
-    id= db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    user_id= db.Column(db.Integer,db.ForeignKey('users.id'), nullable=False)
-    movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'), nullable=False)
-
-
-    movie_w = db.relationship('Movie', cascade="all,delete", backref= 'watcheds')
-    watched = db.relationship('User', cascade='all,delete', backref= 'watcheds')
 
 
     

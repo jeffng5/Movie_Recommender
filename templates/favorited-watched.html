@@ -1,0 +1,31 @@
+{%extends "home.html"%}
+
+{%block content%}
+<h3>Movies that You Favorited</h3>
+
+{%for movie in fav_movies%}
+
+<a class="title-detail" href="/{{movie.id}}"><p class="title">{{movie.title}}</p></a> 
+<img class= "poster" src="https://image.tmdb.org/t/p/original/{{movie.image}}" width="70" height="75">  
+<!-- <img class="favorited-movie-grid-1" id= "favorite" src="../static/images/liked.png">  -->
+
+{%endfor%}
+
+<h3> These are Your Watched Movies</h3>
+
+{%for movie in watched_movies%}
+<a class="title-detail-1" href="/{{movie.id}}"><p class="title">{{movie.title}}</p></a> 
+<img class= "poster" src="https://image.tmdb.org/t/p/original/{{movie.image}}" width="70" height="75">  
+<!-- <img class= "watched-movie-1" src="../static/images/watched-filled.png" height= "40" width="40"> -->
+
+{%endfor%}
+
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="static/script.js"></script>
+
+<a href="/search">Go Back to Search</a>
+<a href="/favorited-watched">Submit Changes</a>
+
+{%endblock%}
+
