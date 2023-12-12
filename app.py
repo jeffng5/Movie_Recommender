@@ -191,7 +191,7 @@ def recommend_movie(id):
     
         
     listA=[]
-    #turning the strings into word embeddings
+    # turning the strings into word embeddings
     # embedding_many=[]
     # for x in total:
     #     try:
@@ -206,7 +206,7 @@ def recommend_movie(id):
         embedding_many = pickle.load(f)
     
     
-    #pickling the file
+    # pickling the file
     # with open ('embedding_many.pickle', 'wb') as f:
     #     pickle.dump(embedding_many, f, 5)
 
@@ -222,7 +222,7 @@ def recommend_movie(id):
     work= pd.concat(frames, axis=1)
     work['cos_sim']=listA
     #sorting the cosine similarities
-    idx=work['cos_sim'].sort_values(ascending=False)[0:11].index 
+    idx=work['cos_sim'].sort_values(ascending=False)[1:11].index 
     values= work['cos_sim'][idx]
 
     sorted_movies=[]
