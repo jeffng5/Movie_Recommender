@@ -50,7 +50,7 @@ class Movie(db.Model):
     popularity = db.Column(db.Float(precision=5), nullable=True)
     
     favorite_movies= db.relationship('Favorite', cascade= "all,delete", backref= 'movies')
-
+    watched_movies=db.relationship('Watched', cascade='all,delete', backref= 'movies')
 
 class Tag(db.Model):
 

@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, flash, redirect, session, jso
 from sqlalchemy.exc import IntegrityError
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import desc
+from sqlalchemy.sql import func
 import requests, json
 import ast
 import json
@@ -12,7 +13,8 @@ from collections.abc import Mapping
 import pandas as pd
 from forms import MovieForm, CatalogForm, UserAddForm, LoginForm
 from models import db, connect_db, Movie, Tag, User, Favorite, Watched
-
+import spacy
+import numpy as np
 
         
 app = Flask(__name__)
@@ -50,10 +52,17 @@ def signup():
         password=form.password.data
         email=form.email.data
         
+        for ele in User.query.all():
+            if ele.username == username:
+                return redirect("/signup")
+        
         user=User.register(username, password, email)
         db.session.add(user)
-        db.session.commit()
 
+        db.session.commit()
+        
+        
+            
         session["user_id"] = user.id
         if user.id:
             return redirect("/intro")
@@ -85,14 +94,14 @@ def login():
 
 @app.route('/intro', methods=['GET'])
 def intro():
-    id=session['user_id']
-    if session['user_id'] == None:
-        flash("Access unauthorized.", "danger")
-        return redirect("/")
-    id = session['user_id']
-    identify = User.query.filter_by(id=id).first()
-    return render_template('intro.html', identify=identify)
-
+    
+    try:
+        if session['user_id']:
+            identify = User.query.filter_by(id=id).first()
+            return render_template('intro.html', identify=identify)
+    except: 
+        return redirect("/login")   
+       
 
 
 @app.route('/search', methods=['GET','POST'])
@@ -105,7 +114,11 @@ def search_movie():
         watched_movies = Movie.query.filter(Movie.id==Watched.movie_id, Watched.user_id==session['user_id']).all()
         favorited_movies = Movie.query.filter(Movie.id==Favorite.movie_id, Watched.user_id==session['user_id']).all()
         term = form.title.data
-        list_of_movies = Movie.query.filter(Movie.title.ilike("%" + term + "%")).order_by(Movie.popularity.desc())    
+        try:
+            list_of_movies = Movie.query.filter(Movie.title.ilike("%" + term + "%")).order_by(Movie.popularity.desc())
+        except: 
+            len(list_of_movies)==0
+            return render_template('error.html')
         u_id= session['user_id']
 
         
@@ -144,6 +157,8 @@ def browse():
 
 @app.route("/<int:id>")
 def single_movie(id):
+    if type(id) != int():
+        flash("the url must be a valid integer")
     user_id = session['user_id']
     movie_details= Movie.query.filter(Movie.id==id)
     return render_template('movie_details.html', movie_details=movie_details)
@@ -159,11 +174,10 @@ def logout():
     flash(f'LOGOUT SUCCESSFUL!!')
     return render_template('home.html')
 
-import spacy
-import numpy as np
+
 nlp= spacy.load("en_core_web_lg")
 spacy_tokenizer=nlp.tokenizer
-import pandas as pd
+
 
 def prep(x):
     embedding=nlp(x).vector.reshape(300,)
@@ -306,20 +320,18 @@ def watch_movie():
 
 @app.route('/favorited-watched')
 def get_favorited():
-    id=session['user_id']
+    
     data=request.get_json(force=True)
     item= data['movie_id']
     
     
-    
-    fav_movies= Favorite.query.filter(Favorite.user_id==id)
-    thing = Movie.query.filter(Movie.id==Favorite.movie_id)
-    fav_movies= [fav_movies in thing]
-    watched_movies = Favorite.query.filter(Favorite.user_id==id)
-    thang = Movie.query.filter(Movie.id==Favorite.movie_id)
-    watched_movies= [watched_movies in thang]
-    
-    return render_template('favorited-watched.html', fav_movies=fav_movies, watched_movies=watched_movies) 
+    last_orders = Favorite.query.filter(id==Movie.id).subquery()
+    query = User.query.join(
+        last_orders, User.id==Favorite.user_id)
+    print(str(query))
+    # favorited_movies = Movie.query.filter(Movie.id==Favorite.movie_id, Watched.user_id==session['user_id']).all()
+    # watched = Movie.query.filter(Watched.movie_id==id, User.watched_movies.id ==session['user_id'])
+    return render_template('favorited-watched.html', favorited=query) 
     
     
    
