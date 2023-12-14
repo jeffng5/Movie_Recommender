@@ -1,6 +1,12 @@
 # Movie Geeks DB
 Capstone 1 Project to Recommend Movies 
 
+## Steps to run app:
+FROM TERMINAL:
+ * make sure you have dependencies installed, using "pip install -r requirements.txt"
+ * "python3 seed.py" to load the database
+ * "flask run" or "python3 app.py"
+
 NOTE:
 This repository contains some files that contain data from API that will be used in the database. Database contains 50,000+ movies. Recommender uses POS tagging and word embeddings of the tags to generate cosine similarities that will give us most similar movies. (Please refer to code for specific algorithm). 
 
