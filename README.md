@@ -15,7 +15,7 @@ python -m spacy download en_core_web_lg
 
 
 This website allows users to look up their movies in a database by genre or my search and recommends movies to them. Features implemented include:
-* a login/signup/logout feature to help users organize and set viewing provacy
+* a login/signup/logout feature to help users organize and browse movies 
 * search feature to find user movies quickly
 * movies separated by genre to allow users to browse if they don't have a movie in mind
 * a favorites feature that allows users to mark the movie as favorite
