@@ -84,7 +84,7 @@ def login():
                                  pwd)
 
         if u:
-            session['user_id']= u.id
+            session['user_id'] = u.id
             return redirect("/intro")
 
         else:
@@ -92,12 +92,12 @@ def login():
             
     return render_template('login.html', form=form)
 
-@app.route('/intro', methods=['GET'])
+@app.route('/intro', methods=['GET', 'POST'])
 def intro():
-    
+    print(session['user_id'])
     try:
         if session['user_id']:
-            identify = User.query.filter_by(id=id).first()
+            identify = User.query.filter_by(id=session['user_id']).first()
             return render_template('intro.html', identify=identify)
     except: 
         return redirect("/login")   
