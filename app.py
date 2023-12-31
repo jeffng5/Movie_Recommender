@@ -215,7 +215,7 @@ def recommend_movie(id):
     
     
     #opening the file
-    with open('/Users/jeffreyng/Movie_Recommender/embedding_many.pickle', 'rb') as f:
+    with open('./embedding_many.pickle', 'rb') as f:
         embedding_many = pickle.load(f)
     
     
@@ -224,7 +224,7 @@ def recommend_movie(id):
     #     pickle.dump(embedding_many, f, 5)
 
     #computing the dot product and cosine similarity
-    
+  
     for i in range(len(embedding_many)):
         listA.append(np.dot(embedding_many[i], embedding)/(np.sqrt(np.sum(np.square(embedding_many[i])))*np.sqrt(np.sum(np.square(embedding)))))
     
