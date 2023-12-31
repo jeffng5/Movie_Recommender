@@ -20,7 +20,7 @@ app = Flask(__name__)
 app.app_context().push()
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
-app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:password@localhost:5432/jeffreyng'
+app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql:///jeffreyng'
 app.config['SQLALCHEMY_RECORD_QUERIES'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SQLALCHEMY_ECHO'] = True
