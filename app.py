@@ -6,7 +6,6 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import desc
 from sqlalchemy.sql import func
 import requests, json
-import ast
 import json
 import pickle
 from collections.abc import Mapping
@@ -21,7 +20,7 @@ app = Flask(__name__)
 app.app_context().push()
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
-app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql:///jeffreyng'
+app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres:password@localhost:5432/jeffreyng'
 app.config['SQLALCHEMY_RECORD_QUERIES'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SQLALCHEMY_ECHO'] = True
@@ -325,13 +324,8 @@ def get_favorited():
     item= data['movie_id']
     
     
-    last_orders = Favorite.query.filter(id==Movie.id).subquery()
-    query = User.query.join(
-        last_orders, User.id==Favorite.user_id)
-    print(str(query))
-    # favorited_movies = Movie.query.filter(Movie.id==Favorite.movie_id, Watched.user_id==session['user_id']).all()
     # watched = Movie.query.filter(Watched.movie_id==id, User.watched_movies.id ==session['user_id'])
-    return render_template('favorited-watched.html', favorited=query) 
+    return render_template('favorited-watched.html') 
     
     
    
