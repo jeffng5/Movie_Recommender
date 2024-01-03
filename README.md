@@ -1,6 +1,7 @@
 # Movie Geeks DB
 Capstone 1 Project to Recommend Movies 
-[Movie Recommender](https://movie-recommender-mgdb2.onrender.com/)
+
+[label](https://movie-recommender-mgdb2.onrender.com/)
 
 ## Steps to run app:
 FROM TERMINAL:
