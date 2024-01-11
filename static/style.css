@@ -1,6 +1,7 @@
 
 body{
   background-color: slategray;
+
 }
 h1, h2, h4 {
     color: goldenrod;
@@ -28,19 +29,18 @@ button.login-button {
 
 button.bttn {
     font-family: Verdana, sans-serif;
-    
     left: 150px;
     border-radius : 8px;
     padding: 10px;
     background-color: goldenrod;
     color: whitesmoke;
+    margin-bottom: 10px;
   
   }
 
 .grid-item{
-  float: left;
-  /* margin-right: 50px;
-  margin-bottom: 50px; */
+  display: "inline-flexbox";
+ 
 }
 
 /* Check eye by Omar Safaa from <a href="https://thenounproject.com/browse/icons/term/check-eye/" target="_blank" title="Check eye Icons">Noun Project</a> (CC BY 3.0) */
@@ -121,23 +121,27 @@ h3 a.reset{
 }
 
 a {
-  color: whitesmoke;
+  color: goldenrod;
   font-family: Verdana, sans-serif;
   
-}
-
- 
-
-div.grid-item + div.grid-item {
-
-margin-right: 30px;
-margin-bottom: 30px;
-margin-top: 30px;
-
 }
 
 div.columnar{
 float: left;
 width: 33%;
+color: goldenrod;
 
 }
+
+div.grid-item{
+float: left;
+width: 33%;
+margin-bottom: 20px;
+
+}
+
+a.catalog{
+  color: whitesmoke;
+
+}
+
