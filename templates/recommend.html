@@ -3,7 +3,7 @@
 
 {%block content%}
 
-
+<body class= 'no-nav-bar'>
 {%for movie in sorted_movies%}
 <div>
 <img class= "poster" src="https://image.tmdb.org/t/p/original/{{movie.image}}" width="200" height="275">
@@ -21,4 +21,5 @@
 {{item}}
 {%endfor%}
 <h3><a class= "reset" href='/intro'>Start Over</a></h3>
+</body>
 {%endblock%} 

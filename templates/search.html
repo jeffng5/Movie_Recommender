@@ -2,6 +2,7 @@
 
 
 {%block content%}
+<body class= "no-nav-bar">
 <h3>Search for Movie</h3>
 <form method="POST">
     {{form.hidden_tag()}}
@@ -12,6 +13,6 @@
 <button class="bttn">Start Search</button>
 </form>
 
-<button class="bttn"><a href= "/catalog">Browse Catalog Instead</a></button>
-
+<button class="bttn"><a class= "catalog" href= "/catalog">Browse Catalog Instead</a></button>
+</body>
 {%endblock%}
