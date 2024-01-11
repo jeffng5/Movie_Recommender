@@ -329,40 +329,7 @@ def get_favorited():
     
     
    
-# @app.route('/get-rid-of-watched', methods=['POST'])
-# def delete_from_watched_list():
-#     data = request.get_json(force=True)
-#     item = data['movie_id']
-
-#     if item:
-#         user_id = session['user_id']
-#         movie_id=item
-#         print(item)
-#         Watched.query.filter(Watched.movie_id == movie_id, Watched.user_id == user_id).delete()
-#         db.session.commit()
-    
-#     return render_template("favorited-watched.html")
 
 
-
-
-
-
-# @app.route('/get-rid-of-favorites', methods=['POST'])
-# def delete_from_favorite_list():
-#     data = request.get_json(force=True)
-#     item = data['movie_id']
-#     print(item)
-#     if item:
-#         user_id= session['user_id']
-#         movie_id = item
-#         show = db.session.query(Movie.id, Favorite.movie_id, Favorite.user_id).join(Favorite).all()
-#         # print(show.query.filter(Favorite.user_id==user_id, Favorite.movie_id==item).delete())
-#         print(show)
-        
-#         Favorite.query.filter(Favorite.movie_id == movie_id, Favorite.user_id == user_id).delete()
-#         db.session.commit()
-
-#     return render_template("favorited-watched.html")
 
 
