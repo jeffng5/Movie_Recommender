@@ -1,8 +1,6 @@
 # Movie Geeks DB
 Capstone 1 Project to Recommend Movies 
 
-[Link to Project](https://movie-recommender-mgdb2.onrender.com/)
-
 ## Steps to run app:
 FROM TERMINAL:
  * make sure you have dependencies installed, using "pip install -r requirements.txt"
