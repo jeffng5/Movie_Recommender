@@ -1,5 +1,5 @@
 # Movie Geeks DB
-Capstone 1 Project to Recommend Movies [deployed site] (https://movie-recommender-mgdb2.onrender.com/) 
+Capstone 1 Project to Recommend Movies [deployed site](https://movie-recommender-mgdb2.onrender.com/) 
 
 ## Steps to run app:
 FROM TERMINAL:
@@ -25,7 +25,7 @@ This website allows users to look up their movies in a database by genre or my s
 ## USERFLOW
 The user flow starts with a sign up/login which requires a unique username and password. Upon signup a email is requested also. The user is welcomed to page and allowed to browse movies using app's search feature or browse by genre. Either option is robust in what the list returns especially of a user types an incomplete search, where app will include all movies with that search term. From there, the user can see the listed movies and select one for a detailed view. The detail view has the movies poster, popularity rating, synopsis, genre, and most importantly, a recommend button to recommend similar movies. In this page, there is also a favorite and watched button to allow users to save their likes/watches to database. The recommendation will lead to top 10 recommendations for the selected movie. The recos will have a synopsis and a user can select the reco movie for another detail view with same options and recommend that as well. Then finally, there is a log out.
 
-The API is the tmdb [API] (https://developer.themoviedb.org/docs/getting-started) using imdbcode to reach each movie's endpoint. Please use ipython and %run seed.py to seed the movie db into the app's database in order to get the app and recommendation running. 
+The API is the tmdb [API](https://developer.themoviedb.org/docs/getting-started) using imdbcode to reach each movie's endpoint. Please use ipython and %run seed.py to seed the movie db into the app's database in order to get the app and recommendation running. 
 
 ## TECHNOLOGY STACK: 
 * HTML5/ CSS
