@@ -1,4 +1,4 @@
-# Movie Geeks DB
+# Movie Geeks DB - using SpaCy word embeddings, I calculated the dot product and then the cosine similarity between the movies to make recommendations
 Capstone 1 Project to Recommend Movies [deployed site](https://movie-recommender-mgdb2.onrender.com/) 
 
 ## Steps to run app:
