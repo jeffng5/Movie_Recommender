@@ -2,9 +2,11 @@
 
 
 {%block content%}
+<div>
 <img class= "poster-main" src="https://image.tmdb.org/t/p/original/{{film.image}}" width="200" height="275">
 <h3 class = 'display-main'>Here are the recommendations for:<h3> 
     <h3 class = 'display-main-1'>"{{film.title}}"</h3>
+</div>
 <span class= 'no-nav-bar'>
 {%for movie in sorted_movies%}
 
