@@ -2,24 +2,24 @@
 
 
 {%block content%}
-
-<body class= 'no-nav-bar'>
+<img class= "poster-main" src="https://image.tmdb.org/t/p/original/{{film.image}}" width="200" height="275">
+<h3 class = 'display-main'>Here are the recommendations for:<h3> 
+    <h3 class = 'display-main-1'>"{{film.title}}"</h3>
+<span class= 'no-nav-bar'>
 {%for movie in sorted_movies%}
+
 <div>
 <img class= "poster" src="https://image.tmdb.org/t/p/original/{{movie.image}}" width="200" height="275">
 <h3><a id="title-detail" href="/{{movie.id}}">{{movie.title}}</a></h3>
 <h3>Synopsis: {{movie.summary}}</h3>
+<h3>Similarity value: {{value}}
+{%endfor%}
+{%for value in values%}
 
 {%endfor%}
-{% for value in values%}
-<h3>Similarity value: {{value}}</h3>
-{%endfor%}
+
 </div>
-{{movie_detail}}
 
-{%for item in stuff%}
-{{item}}
-{%endfor%}
 <h3><a class= "reset" href='/intro'>Start Over</a></h3>
 </body>
 {%endblock%} 

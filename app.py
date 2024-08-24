@@ -188,6 +188,7 @@ def prepare(x):
 
 @app.route('/recommendation/<int:id>')
 def recommend_movie(id):
+    film= Movie.query.filter(Movie.id==id).first()
     movie_details= Movie.query.filter(Movie.id==id).first()
     # movie_details= [movie_details[x].overview for x in range(len(movie_details))]
     all_movie_details= Movie.query.all()
@@ -196,12 +197,7 @@ def recommend_movie(id):
     movie_details= movie_details.overview
     # total = [total_movie_details[x].overview for x in range(0,len(total_movie_details))]
     
-
-    
-    
-    
     embedding=prep(movie_details)
-    
         
     listA=[]
     # turning the strings into word embeddings
@@ -211,9 +207,7 @@ def recommend_movie(id):
     #         embedding_many.append(prepare(x))
     #     except:
     #         pass
-
-    
-    
+   
     #opening the file
     with open('./embedding_many.pickle', 'rb') as f:
         embedding_many = pickle.load(f)
@@ -242,9 +236,11 @@ def recommend_movie(id):
     for num in idx:
         sorted_movies.append(total_movie_details[num])
     
-   
-    return render_template('recommend.html', sorted_movies=sorted_movies, values=values, idx=idx)
-                        #    movie_details=movie_details, sorted_movies=sorted_movies, values=values)
+    
+    
+    
+    return render_template('recommend.html', film= film, sorted_movies=sorted_movies, values=values, idx=idx)
+                    
 
 
 @app.route('/post-to-favorites', methods=['POST'])
