@@ -43,10 +43,6 @@ h3, p, a {
  
 }
 
-/* Check eye by Omar Safaa from <a href="https://thenounproject.com/browse/icons/term/check-eye/" target="_blank" title="Check eye Icons">Noun Project</a> (CC BY 3.0) */
-/* Favorite by Poeticons from <a href="https://thenounproject.com/browse/icons/term/favorite/" target="_blank" title="Favorite Icons">Noun Project</a> (CC BY 3.0) */
-
-
 .favorited-movie{
 position: relative;
 top: -230px;
@@ -143,18 +139,4 @@ margin-bottom: 20px;
 .catalog{
   color: whitesmoke;
 
-}
-
-.poster-main {
-  text-align: center;
-}
-
-.display-main {
-  text-align: center;
-}
-
-.display-main-1 {
-  text-align: center;
-  font-size: 30px;
-  color: red;
 }

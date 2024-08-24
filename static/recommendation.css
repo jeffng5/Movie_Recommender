@@ -1,0 +1,32 @@
+body {
+    background-color: slategray;
+}
+.poster-main {
+    position: relative;
+    text-align: center;
+  }
+  
+  .display-main-1 {
+    margin: 0 auto;
+    font-size: 30px;
+    color: red;
+  }
+
+.recommendation {
+    text-align: center;
+}
+
+#title-detail {
+    margin-left: 60px;
+    color: skyblue;
+
+}
+.synopsis {
+    margin-left: 60px;
+    color: goldenrod;
+}
+
+  .poster {
+    margin: 0 auto;
+    margin-left: 60px;
+  }
