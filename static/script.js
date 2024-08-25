@@ -33,3 +33,7 @@ async function callToPostLike() {
 let button = document.getElementsByTagName("img")[1]
 console.log(button)
 button.addEventListener('click', function (e) { e.preventDefault(); favoriteIcon(); callToPostLike() })
+
+
+
+

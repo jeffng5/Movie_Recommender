@@ -145,3 +145,13 @@ margin-bottom: 20px;
 .grid-columnar {
   margin-bottom: 40px;
 }
+
+.result-favorite {
+  display: inline-block;
+  margin: 25px;
+}
+
+.result-watched {
+  display: inline-block;
+  margin: 25px;
+}

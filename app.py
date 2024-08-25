@@ -168,7 +168,7 @@ def single_movie(id):
     if type(id) != int():
         flash("the url must be a valid integer")
     user_id = session['user_id']
-    
+
     if request.method == 'POST':
         
         data = request.get_json()
@@ -297,6 +297,21 @@ def add_favorite():
     #      db.session.commit()
     return render_template("movie_details.html", m_id =item0) 
 
+@app.route("/post-to-watched", methods=['GET','POST'])
+def watch_movie():
+    
+    id = session['user_id']
+    item = data['movie_id']
+    print(item)
+    if item:
+        user_id = session['user_id']
+        movie_w = item
+        movie = data['title']
+        watched_movie=Watched(user_id = user_id, movie_id = movie_w, movie = movie)
+        db.session.add(watched_movie)
+        db.session.commit()
+    
+    return render_template('movie_details.html')
 
 @app.route('/post-to-unfavorites', methods=['POST'])
 def unfavorite_movie():
@@ -326,21 +341,7 @@ def unwatch_movie():
     
     return render_template("movie_details.html")
 
-@app.route("/post-to-watched", methods=['POST'])
-def watch_movie():
-    data = request.get_json(force=True)
-   
-    item = data['movie_id']
-    print(item)
-    if item:
-        user_id = session['user_id']
-        movie_w = item
-        movie = data['title']
-        watched_movie=Watched(user_id = user_id, movie_id = movie_w, movie = movie)
-        db.session.add(watched_movie)
-        db.session.commit()
-    
-    return render_template('movie_details.html')
+
 
 
 @app.route('/favorited-watched')
