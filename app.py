@@ -5,7 +5,6 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
-from flask_paginate import Pagination, get_page_args
 from sqlalchemy import desc, create_engine
 from sqlalchemy.sql import func
 import requests, json
