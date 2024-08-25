@@ -2,8 +2,11 @@ from flask import Flask, render_template, request, flash, redirect, session, jso
 # from flask_session import Session
 # from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import select
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import desc
+from flask_cors import CORS, cross_origin
+from flask_paginate import Pagination, get_page_args
+from sqlalchemy import desc, create_engine
 from sqlalchemy.sql import func
 import requests, json
 import json
@@ -17,10 +20,12 @@ import numpy as np
 
         
 app = Flask(__name__)
+CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 # app.app_context().push()
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
-app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://norylmst:9otnRav6eugshKTmGTSo1Xf_iVLV4ZN3@mahmud.db.elephantsql.com/norylmst'
+app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://movie_recommender_user:mcptRLjvIQMlAK1yz2MSREO4hk40k9oP@dpg-cm5u9dq1hbls73alsiu0-a/movie_recommender'
 app.config['SQLALCHEMY_RECORD_QUERIES'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SQLALCHEMY_ECHO'] = True
@@ -120,7 +125,7 @@ def search_movie():
             return render_template('error.html')
         u_id= session['user_id']
 
-        
+
         # favorite= Favorite(user_id=u_id, movie_id=m_id)
         # db.session.add(favorite)
         # db.session.commit()
@@ -138,11 +143,17 @@ def browse():
     form = CatalogForm()
     if form.validate_on_submit():
         genres = form.genres.data
-        list_of_movies_by_genres = Movie.query.filter_by(genre1 = genres).order_by(Movie.popularity.desc())
-        list_of_movies_by_genres1 = Movie.query.filter(Movie.genre2 == genres).order_by(Movie.popularity.desc())
         
-        return render_template('last_page.html', list_of_movies_by_genres=list_of_movies_by_genres,
-            list_of_movies_by_genres1= list_of_movies_by_genres1)
+        list_of_movies_by_genres = Movie.query.filter_by(genre1 = genres).order_by(Movie.popularity.desc())
+       
+        # first_list = list_of_movies_by_genres[:200]
+        # second_list = list_of_movies_by_genres[200:400]
+        # third_list = list_of_movies_by_genres[400:600]
+        # fourth_list = list_of_movies_by_genres[600:800]
+        # fifth_list = list_of_movies_by_genres[800:1000]
+
+        
+        return render_template('last_page.html', list_of_movies_by_genres=list_of_movies_by_genres)
             #list_of_movies_by_pop= list_of_movies_by_pop) 
                                #list_of_movies_by_vote_averages= list_of_movies_by_vote_averages)
     else:
@@ -153,17 +164,35 @@ def browse():
 # Favorites.movie.filter_by(Favorites.user_id = User.id)
 
 
-
-@app.route("/<int:id>")
+@app.route("/<int:id>", methods=['POST', 'GET'])
 def single_movie(id):
     if type(id) != int():
         flash("the url must be a valid integer")
     user_id = session['user_id']
-    movie_details= Movie.query.filter(Movie.id==id)
-    return render_template('movie_details.html', movie_details=movie_details)
-    if Favorite.query.filter(Favorite.movie_id==id, Favorite.user_id==user_id) :
-        movie_details = Movie.query.filter(Movie.id==id, Favorite.user_id==user_id)
-        return render_template('movie_details_liked.html', movie_details=movie_details)
+    
+    if request.method == 'POST':
+        
+        data = request.get_json()
+        print(data.get('title'))
+        title = data.get('title')
+        movie_title = {
+            'title' : title
+        }
+        
+        movie_details= Movie.query.filter(Movie.title==title).first()
+        print(movie_details)
+        record = Favorite(user_id=user_id, movie_id=id)
+    
+        db.session.add(record)
+        db.session.commit()
+        return jsonify(movie_title)
+
+    if request.method == 'GET':
+        movie_details= Movie.query.filter(Movie.id==id)
+        return render_template('movie_details.html', movie_details=movie_details)
+    # if Favorite.query.filter(Favorite.movie_id==id, Favorite.user_id==user_id) :
+    #     movie_details = Movie.query.filter(Movie.id==id, Favorite.user_id==user_id)
+    #     return render_template('movie_details_liked.html', movie_details=movie_details)
     
 
 @app.route('/logout')
@@ -243,7 +272,7 @@ def recommend_movie(id):
                     
 
 
-@app.route('/post-to-favorites', methods=['POST'])
+@app.route('/post-to-favorites', methods=['GET','POST'])
 def add_favorite():
     # if not g.user:
     #     flash("Access unauthorized.", "danger")
@@ -252,11 +281,13 @@ def add_favorite():
     id=session['user_id']
     data = request.get_json(force=True)
     item0 = data['movie_id']
+    item1 = data['title']
     # item1 = data.get('image1')
     if item0:
         user_id= id
         movie_id = item0
-        record=Favorite(user_id=user_id, movie_id=movie_id)
+        movie = item1
+        record=Favorite(user_id=user_id, movie_id=movie_id, title= title)
         db.session.add(record)
         db.session.commit()
     # elif item1:
@@ -305,8 +336,8 @@ def watch_movie():
     if item:
         user_id = session['user_id']
         movie_w = item
-        
-        watched_movie=Watched(user_id = user_id, movie_id = movie_w)
+        movie = data['title']
+        watched_movie=Watched(user_id = user_id, movie_id = movie_w, movie = movie)
         db.session.add(watched_movie)
         db.session.commit()
     
@@ -315,13 +346,16 @@ def watch_movie():
 
 @app.route('/favorited-watched')
 def get_favorited():
+    u_id = session['user_id']
+    engine = create_engine('postgresql://movie_recommender_user:mcptRLjvIQMlAK1yz2MSREO4hk40k9oP@dpg-cm5u9dq1hbls73alsiu0-a/movie_recommender')
+    with engine.connect() as connection:
+        result = connection.execute('SELECT movies.id, movies.title, movies.image, favorites.user_id FROM favorites INNER JOIN movies ON movies.id = favorites.movie_id WHERE favorites.user_id = {}'.format(u_id))
+        
     
-    data=request.get_json(force=True)
-    item= data['movie_id']
-    
-    
-    # watched = Movie.query.filter(Watched.movie_id==id, User.watched_movies.id ==session['user_id'])
-    return render_template('favorited-watched.html') 
+    with engine.connect() as connection:
+        watched = connection.execute('SELECT movies.id, movies.title, movies.image, watcheds.user_id from watcheds INNER JOIN movies ON movies.id = watcheds.movie_id WHERE user_id = {}'.format(u_id))
+        print(watched)
+    return render_template('favorited-watched.html', result = result, watched= watched) 
     
     
    

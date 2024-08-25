@@ -6,7 +6,7 @@ body {
     text-align: center;
   }
   
-  .display-main-1 {
+.display-main-1 {
     margin: 0 auto;
     font-size: 30px;
     color: red;
@@ -26,7 +26,7 @@ body {
     color: goldenrod;
 }
 
-  .poster {
+.poster {
     margin: 0 auto;
     margin-left: 60px;
   }

@@ -8,6 +8,8 @@
 <link rel = "stylesheet" href="static/style.css" type="text/css">
 
 </head>
+
+<body>
 {%for movie in movie_details%}
 <h3 class= 'movie' id="{{movie.id}}">{{movie.title}}</h3>
 <img class= "poster" src="https://image.tmdb.org/t/p/original/{{movie.image}}" width="200" height="275">
@@ -25,5 +27,8 @@
 </form>
 {%endfor%}
 <h3><a href="/intro">Start Over</a></h3>
+</body>
+
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script  src="static/icon-listing.js"></script>
+<script  src="static/script.js"></script>
+</html>

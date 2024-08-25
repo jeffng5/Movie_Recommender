@@ -3,7 +3,7 @@
 {%block content%}
 <h3>Movies that You Favorited</h3>
 
-{%for movie in favorited%}
+{%for movie in result%}
 
 <a class="title-detail" href="/{{movie.id}}"><p class="title">{{movie.title}}</p></a> 
 <img class= "poster" src="https://image.tmdb.org/t/p/original/{{movie.image}}" width="70" height="75">  
