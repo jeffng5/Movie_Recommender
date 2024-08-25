@@ -36,4 +36,30 @@ button.addEventListener('click', function (e) { e.preventDefault(); favoriteIcon
 
 
 
+function watchedIcon() {
+    let icon = document.getElementsByTagName('img')[2]
+    icon.src = '../static/images/watched-filled.png'
+    icon.id = 'unwatched'
 
+}
+
+async function callToWatched() {
+
+    fetch(`/post-to-watched`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                movie_id: `${m_id}`
+            }),
+        }).then(response => response.json()).then(data => console.log(data))
+        .catch((err)=>{
+            console.log(err)
+        })
+}
+
+let watchedButton = document.getElementsByTagName("img")[2]
+console.log(watchedButton)
+watchedButton.addEventListener('click', function (e) { e.preventDefault(); watchedIcon(); callToWatched() })

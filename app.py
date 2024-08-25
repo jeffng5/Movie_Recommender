@@ -300,18 +300,21 @@ def add_favorite():
 @app.route("/post-to-watched", methods=['GET','POST'])
 def watch_movie():
     
-    id = session['user_id']
-    item = data['movie_id']
-    print(item)
-    if item:
-        user_id = session['user_id']
-        movie_w = item
-        movie = data['title']
-        watched_movie=Watched(user_id = user_id, movie_id = movie_w, movie = movie)
-        db.session.add(watched_movie)
-        db.session.commit()
+    user_id = session['user_id']
+    if request.method == 'POST':
+        
+        data = request.get_json()
+        print(data.get('movie_id'))
+        id = data.get('movie_id')
+        movie_id = {
+            'movie_id' : id
+        }
+   
+        record = Watched(user_id=user_id, movie_id=id)
     
-    return render_template('movie_details.html')
+        db.session.add(record)
+        db.session.commit()
+        return jsonify(movie_id)
 
 @app.route('/post-to-unfavorites', methods=['POST'])
 def unfavorite_movie():
