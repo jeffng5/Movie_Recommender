@@ -24,7 +24,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 # app.app_context().push()
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
-app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://norylmst:9otnRav6eugshKTmGTSo1Xf_iVLV4ZN3@mahmud.db.elephantsql.com/norylmst'
+app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://movie_recommender_user:mcptRLjvIQMlAK1yz2MSREO4hk40k9oP@dpg-cm5u9dq1hbls73alsiu0-a/movie_recommender'
 app.config['SQLALCHEMY_RECORD_QUERIES'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SQLALCHEMY_ECHO'] = True
@@ -145,12 +145,6 @@ def browse():
         
         list_of_movies_by_genres = Movie.query.filter_by(genre1 = genres).order_by(Movie.popularity.desc())
        
-        # first_list = list_of_movies_by_genres[:200]
-        # second_list = list_of_movies_by_genres[200:400]
-        # third_list = list_of_movies_by_genres[400:600]
-        # fourth_list = list_of_movies_by_genres[600:800]
-        # fifth_list = list_of_movies_by_genres[800:1000]
-
         
         return render_template('last_page.html', list_of_movies_by_genres=list_of_movies_by_genres)
             #list_of_movies_by_pop= list_of_movies_by_pop) 
@@ -350,7 +344,7 @@ def unwatch_movie():
 @app.route('/favorited-watched')
 def get_favorited():
     u_id = session['user_id']
-    engine = create_engine('postgresql://norylmst:9otnRav6eugshKTmGTSo1Xf_iVLV4ZN3@mahmud.db.elephantsql.com/norylmst')
+    engine = create_engine('postgresql://movie_recommender_user:mcptRLjvIQMlAK1yz2MSREO4hk40k9oP@dpg-cm5u9dq1hbls73alsiu0-a/movie_recommender')
     with engine.connect() as connection:
         result = connection.execute('SELECT movies.id, movies.title, movies.image, favorites.user_id FROM favorites INNER JOIN movies ON movies.id = favorites.movie_id WHERE favorites.user_id = {}'.format(u_id))
         
