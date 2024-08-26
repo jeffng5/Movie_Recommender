@@ -247,7 +247,7 @@ def recommend_movie(id):
 
     #computing the dot product and cosine similarity
   
-    for i in range(len(embedding_many)):
+    for i in range(len(embedding_many[14000:])):
         listA.append(np.dot(embedding_many[i], embedding)/(np.sqrt(np.sum(np.square(embedding_many[i])))*np.sqrt(np.sum(np.square(embedding)))))
     
 
@@ -258,7 +258,7 @@ def recommend_movie(id):
     work['cos_sim']=listA
     #sorting the cosine similarities
     idx=work['cos_sim'].sort_values(ascending=False)[1:11].index 
-    values= work['cos_sim'][idx]
+    
 
     sorted_movies=[]
     for num in idx:
@@ -267,7 +267,7 @@ def recommend_movie(id):
     
     
     
-    return render_template('recommend.html', film= film, sorted_movies=sorted_movies, values=values, idx=idx)
+    return render_template('recommend.html', film= film, sorted_movies=sorted_movies)
                     
 
 

@@ -17,10 +17,10 @@ from sqlalchemy import text
 # Movie.__table__.drop(engine)
 
 
-db.engine.execute('DROP SCHEMA public CASCADE; CREATE SCHEMA public;') # clean reset the database 
-# # db.session.rollback()
-db.create_all()
-db.session.commit()
+# db.engine.execute('DROP SCHEMA public CASCADE; CREATE SCHEMA public;') # clean reset the database 
+# db.session.rollback()
+# db.create_all()
+# db.session.commit()
 
 
 
