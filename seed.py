@@ -18,26 +18,26 @@ from sqlalchemy import text
 
 
 db.engine.execute('DROP SCHEMA public CASCADE; CREATE SCHEMA public;') # clean reset the database 
-# db.session.rollback()
+# # db.session.rollback()
 db.create_all()
 db.session.commit()
 
 
 
 
-with open('https://github.com/jeffng5/Movie_Recommender/static/pickle/name.pickle', 'rb') as f:
+with open('/Users/jeffreyng/Movie_Recommender/static/pickle/name.pickle', 'rb') as f:
     name = pickle.load(f)
-with open('https://github.com/jeffng5/Movie_Recommender/static/pickle/images.pickle', 'rb') as f:
+with open('/Users/jeffreyng/Movie_Recommender/static/pickle/images.pickle', 'rb') as f:
     images = pickle.load(f)
-with open('https://github.com/jeffng5/Movie_Recommender/static/pickle/genres1.pickle', 'rb') as f:
+with open('/Users/jeffreyng/Movie_Recommender/static/pickle/genres1.pickle', 'rb') as f:
     genres1 = pickle.load(f)
-with open('https://github.com/jeffng5/Movie_Recommender/static/pickle/genres2.pickle', 'rb') as f:
+with open('/Users/jeffreyng/Movie_Recommender/static/pickle/genres2.pickle', 'rb') as f:
     genres2 = pickle.load(f)
-with open('https://github.com/jeffng5/Movie_Recommender/static/pickle/popularitys.pickle', 'rb') as f:
+with open('/Users/jeffreyng/Movie_Recommender/static/pickle/popularitys.pickle', 'rb') as f:
     popularitys = pickle.load(f)
-with open('https://github.com/jeffng5/Movie_Recommender/static/pickle/subj.pickle', 'rb') as f:
+with open('/Users/jeffreyng/Movie_Recommender/static/pickle/subj.pickle', 'rb') as f:
     subj = pickle.load(f)
-with open('https://github.com/jeffng5/Movie_Recommender/static/pickle/synopsis.pickle', 'rb') as f:
+with open('/Users/jeffreyng/Movie_Recommender/static/pickle/synopsis.pickle', 'rb') as f:
     synopsis = pickle.load(f)
 
 
