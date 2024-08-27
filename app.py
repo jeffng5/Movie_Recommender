@@ -16,7 +16,8 @@ from forms import MovieForm, CatalogForm, UserAddForm, LoginForm
 from models import db, connect_db, Movie, Tag, User, Favorite, Watched
 import spacy
 import numpy as np
-
+import os
+SECRET_KEY = os.getenv("URL")
         
 app = Flask(__name__)
 CORS(app)
@@ -25,7 +26,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
-app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres.pbdgnhhigahyafvcvekc:beachbodyp90x@aws-0-us-west-1.pooler.supabase.com:5432/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = SECRET_KEY
 app.config['SQLALCHEMY_RECORD_QUERIES'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SQLALCHEMY_ECHO'] = True
@@ -351,7 +352,7 @@ def unwatch_movie():
 @app.route('/favorited-watched')
 def get_favorited():
     u_id = session['user_id']
-    engine = create_engine('postgresql://postgres.pbdgnhhigahyafvcvekc:beachbodyp90x@aws-0-us-west-1.pooler.supabase.com:5432/postgres')
+    engine = create_engine(SECRET_KEY)
     with engine.connect() as connection:
         result = connection.execute('SELECT movies.id, movies.title, movies.image, favorites.user_id FROM favorites INNER JOIN movies ON movies.id = favorites.movie_id WHERE favorites.user_id = {}'.format(u_id))
         

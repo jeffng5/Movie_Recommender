@@ -45,6 +45,7 @@ pydantic==2.5.3
 pydantic_core==2.14.6
 Pygments==2.2.0
 python-dateutil==2.8.2
+python-dotenv
 pytz==2023.3.post1
 requests==2.31.0
 simplegeneric==0.8.1
