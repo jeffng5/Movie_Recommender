@@ -21,10 +21,11 @@ import numpy as np
 app = Flask(__name__)
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
-app.app_context().push()
+
+
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
-app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres.hpmdbfbjghqmisywqire:f2cT4A7T7pwzKvBx@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] =  'postgresql://postgres.pbdgnhhigahyafvcvekc:beachbodyp90x@aws-0-us-west-1.pooler.supabase.com:5432/postgres'
 app.config['SQLALCHEMY_RECORD_QUERIES'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SQLALCHEMY_ECHO'] = True
@@ -36,7 +37,7 @@ app.config['SECRET_KEY'] = "it's a secret"
 
 
 connect_db(app)
-
+app.app_context().push()
 db.create_all()
 
 
@@ -350,7 +351,7 @@ def unwatch_movie():
 @app.route('/favorited-watched')
 def get_favorited():
     u_id = session['user_id']
-    engine = create_engine('postgresql://postgres.hpmdbfbjghqmisywqire:f2cT4A7T7pwzKvBx@aws-0-us-west-1.pooler.supabase.com:6543/postgres')
+    engine = create_engine('postgresql://postgres.pbdgnhhigahyafvcvekc:beachbodyp90x@aws-0-us-west-1.pooler.supabase.com:5432/postgres')
     with engine.connect() as connection:
         result = connection.execute('SELECT movies.id, movies.title, movies.image, favorites.user_id FROM favorites INNER JOIN movies ON movies.id = favorites.movie_id WHERE favorites.user_id = {}'.format(u_id))
         

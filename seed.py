@@ -17,10 +17,10 @@ from sqlalchemy import text
 # Movie.__table__.drop(engine)
 
 
-# db.engine.execute('DROP SCHEMA public CASCADE; CREATE SCHEMA public;') # clean reset the database 
+db.engine.execute('DROP SCHEMA public CASCADE; CREATE SCHEMA public;') # clean reset the database 
 # db.session.rollback()
-# db.create_all()
-# db.session.commit()
+db.create_all()
+db.session.commit()
 
 
 
@@ -47,6 +47,7 @@ with open('/Users/jeffreyng/Movie_Recommender/static/pickle/synopsis.pickle', 'r
 
 
 for i in range(len(name)):
+    
     stuff= Movie(
                    title = name[i],
                     image = images[i],
@@ -57,7 +58,8 @@ for i in range(len(name)):
                     popularity=popularitys[i],
         
                  )
-
+ 
+    
     db.session.add(stuff)
 for i in range(1, len(subj)):
     tags = Tag(
