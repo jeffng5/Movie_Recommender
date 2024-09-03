@@ -10,14 +10,14 @@ from sqlalchemy.sql import func
 import requests, json
 import json
 import pickle
-from collections.abc import Mapping
+# from collections.abc import Mapping
 import pandas as pd
 from forms import MovieForm, CatalogForm, UserAddForm, LoginForm
 from models import db, connect_db, Movie, Tag, User, Favorite, Watched
 import spacy
 import numpy as np
 import os
-SECRET_KEY = os.getenv("URL")
+DATABASE_URL = os.getenv("URL")
         
 app = Flask(__name__)
 CORS(app)
@@ -39,7 +39,7 @@ app.config['SECRET_KEY'] = "it's a secret"
 
 connect_db(app)
 app.app_context().push()
-db.create_all()
+# db.create_all()
 
 
 @app.route('/')
@@ -318,41 +318,10 @@ def watch_movie():
         db.session.commit()
         return jsonify()
 
-@app.route('/post-to-unfavorites', methods=['POST'])
-def unfavorite_movie():
-    data = request.get_json(force=True)
-    item = data['movie_id']
-
-    if item:
-        user_id= session['user_id']
-        movie_id = item
-        Favorite.query.filter(Favorite.movie_id == movie_id, Favorite.user_id == user_id).delete()
-        db.session.commit()
-
-    return render_template("movie_details.html", item=item )
-
-
-@app.route("/post-to-unwatched", methods=['POST'])
-def unwatch_movie():
-    data = request.get_json(force=True)
-    item = data['movie_id']
-
-    if item:
-        user_id = session['user_id']
-        movie_id=item
-        print(item)
-        Favorite.query.filter(Favorite.movie_id==movie_id , Favorite.user_id==user_id).delete()
-        db.session.commit()
-    
-    return render_template("movie_details.html")
-
-
-
-
 @app.route('/favorited-watched')
 def get_favorited():
     u_id = session['user_id']
-    engine = create_engine(SECRET_KEY)
+    engine = create_engine(DATABASE_URL)
     with engine.connect() as connection:
         result = connection.execute('SELECT movies.id, movies.title, movies.image, favorites.user_id FROM favorites INNER JOIN movies ON movies.id = favorites.movie_id WHERE favorites.user_id = {}'.format(u_id))
         
