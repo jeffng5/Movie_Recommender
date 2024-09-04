@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, flash, redirect, session, jsonify, g, abort
-
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select
 from flask_sqlalchemy import SQLAlchemy
@@ -37,8 +36,8 @@ with open('./embedding_many.pickle', 'rb') as f:
 
 
 connect_db(app)
-with app.app_context():
-    db.create_all()
+
+db.create_all()
 app.app_context().push()
 
 
