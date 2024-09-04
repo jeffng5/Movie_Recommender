@@ -19,17 +19,17 @@ DATABASE_URL = os.environ.get("URL1")
 app = Flask(__name__)
 connect_db(app)
 db.create_all()
-app.app_context().push()
+# app.app_context().push()
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 
-
-app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
-app.config['SQLALCHEMY_RECORD_QUERIES'] = True
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_ECHO'] = True
-app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
+with app.app_context():
+    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+    app.config['SQLALCHEMY_RECORD_QUERIES'] = True
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_ECHO'] = True
+    app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 
 #opening the file
