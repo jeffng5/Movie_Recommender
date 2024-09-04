@@ -6,7 +6,6 @@ from flask_cors import CORS, cross_origin
 from sqlalchemy import desc, create_engine
 from sqlalchemy.sql import func
 import requests, json
-import json
 import pickle
 import pandas as pd
 from forms import MovieForm, CatalogForm, UserAddForm, LoginForm
@@ -28,7 +27,7 @@ app.config['SQLALCHEMY_RECORD_QUERIES'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
-app.config['SECRET_KEY'] = "it's a secret"
+# app.config['SECRET_KEY'] = "it's a secret"
 # toolbar = DebugToolbarExtension(app)
     #opening the file
 with open('./embedding_many.pickle', 'rb') as f:
