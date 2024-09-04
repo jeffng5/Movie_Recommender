@@ -15,7 +15,7 @@ import numpy as np
 import os
 from werkzeug.urls import url_encode
 
-DATABASE_URL = os.getenv("URL")
+DATABASE_URL = os.environ.get("URL")
         
 app = Flask(__name__)
 connect_db(app)
@@ -33,7 +33,7 @@ app.config['SQLALCHEMY_ECHO'] = True
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 
-    #opening the file
+#opening the file
 with open('./embedding_many.pickle', 'rb') as f:
     embedding_many = pickle.load(f)
 
