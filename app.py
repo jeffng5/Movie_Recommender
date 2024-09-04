@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, flash, redirect, session, jsonify, g, abort
-# from flask_session import Session
-# from flask_debugtoolbar import DebugToolbarExtension
+
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select
 from flask_sqlalchemy import SQLAlchemy
@@ -10,7 +9,6 @@ from sqlalchemy.sql import func
 import requests, json
 import json
 import pickle
-# from collections.abc import Mapping
 import pandas as pd
 from forms import MovieForm, CatalogForm, UserAddForm, LoginForm
 from models import db, connect_db, Movie, Tag, User, Favorite, Watched
@@ -33,8 +31,9 @@ app.config['SQLALCHEMY_ECHO'] = True
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = "it's a secret"
 # toolbar = DebugToolbarExtension(app)
-
-
+    #opening the file
+with open('./embedding_many.pickle', 'rb') as f:
+    embedding_many = pickle.load(f)
 
 
 connect_db(app)
@@ -238,9 +237,7 @@ def recommend_movie(id):
     #     except:
     #         pass
    
-    #opening the file
-    with open('./embedding_many.pickle', 'rb') as f:
-        embedding_many = pickle.load(f)
+
     
     
     # pickling the file
