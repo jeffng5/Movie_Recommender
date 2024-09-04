@@ -10,17 +10,16 @@ import pickle
 import pandas as pd
 from forms import MovieForm, CatalogForm, UserAddForm, LoginForm
 from models import db, connect_db, Movie, Tag, User, Favorite, Watched
-import spacy
 import numpy as np
 import os
 from werkzeug.urls import url_encode
 
-DATABASE_URL = os.environ.get("URL")
+DATABASE_URL = os.environ.get("URL1")
         
 app = Flask(__name__)
 connect_db(app)
 db.create_all()
-app.app_context().push()
+# app.app_context().push()
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
@@ -203,8 +202,9 @@ def logout():
     flash(f'LOGOUT SUCCESSFUL!!')
     return render_template('home.html')
 
-
-nlp= spacy.load("en_core_web_lg")
+import spacy
+# spacy.cli.download("en_core_web_lg")
+nlp = spacy.load("en_core_web_lg")
 spacy_tokenizer=nlp.tokenizer
 
 
