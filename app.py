@@ -322,11 +322,11 @@ def get_favorited():
     u_id = session['user_id']
     engine = create_engine(os.environ.get("URL1"))
     with engine.connect() as connection:
-        result = connection.execute('SELECT movies.id, DISTINCT movies.title, movies.image, favorites.user_id FROM favorites INNER JOIN movies ON movies.id = favorites.movie_id WHERE favorites.user_id = {}'.format(u_id))
+        result = connection.execute('SELECT DISTINCT movies.id, movies.title, movies.image, favorites.user_id FROM favorites INNER JOIN movies ON movies.id = favorites.movie_id WHERE favorites.user_id = {}'.format(u_id))
         
     
     with engine.connect() as connection:
-        watched = connection.execute('SELECT movies.id, DISTINCT movies.title, movies.image, watcheds.user_id from watcheds INNER JOIN movies ON movies.id = watcheds.movie_id WHERE user_id = {}'.format(u_id))
+        watched = connection.execute('SELECT DISTINCT movies.id, movies.title, movies.image, watcheds.user_id from watcheds INNER JOIN movies ON movies.id = watcheds.movie_id WHERE user_id = {}'.format(u_id))
         print(watched)
     return render_template('favorited-watched.html', result = result, watched= watched) 
     
