@@ -19,7 +19,7 @@ DATABASE_URL = os.environ.get("URL1")
 app = Flask(__name__)
 connect_db(app)
 db.create_all()
-# app.app_context().push()
+app.app_context().push()
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
