@@ -13,6 +13,8 @@ from models import db, connect_db, Movie, Tag, User, Favorite, Watched
 import spacy
 import numpy as np
 import os
+from werkzeug.urls import url_encode
+
 DATABASE_URL = os.getenv("URL")
         
 app = Flask(__name__)
@@ -27,8 +29,7 @@ app.config['SQLALCHEMY_RECORD_QUERIES'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
-# app.config['SECRET_KEY'] = "it's a secret"
-# toolbar = DebugToolbarExtension(app)
+
     #opening the file
 with open('./embedding_many.pickle', 'rb') as f:
     embedding_many = pickle.load(f)
