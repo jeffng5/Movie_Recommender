@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, redirect, session, jsonify, g, abort
+from flask import Flask, render_template, request, flash, redirect, session, jsonify, g, abort, url_for
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select
 from flask_sqlalchemy import SQLAlchemy
@@ -14,24 +14,25 @@ import numpy as np
 import os
 from werkzeug.urls import url_encode
 
-DATABASE_URL = os.environ.get("URL1")
+
         
 app = Flask(__name__)
-connect_db(app)
-db.create_all()
+
+# db.create_all()
 # app.app_context().push()
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 with app.app_context():
-    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("URL")
     app.config['SQLALCHEMY_RECORD_QUERIES'] = True
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_ECHO'] = True
     app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
     app.config['SECRET_KEY'] = "it's a secret"
-
+  
+connect_db(app)
 #opening the file
 with open('./embedding_many.pickle', 'rb') as f:
     embedding_many = pickle.load(f)
@@ -319,7 +320,7 @@ def watch_movie():
 @app.route('/favorited-watched')
 def get_favorited():
     u_id = session['user_id']
-    engine = create_engine(DATABASE_URL)
+    engine = create_engine(os.environ.get("URL"))
     with engine.connect() as connection:
         result = connection.execute('SELECT movies.id, movies.title, movies.image, favorites.user_id FROM favorites INNER JOIN movies ON movies.id = favorites.movie_id WHERE favorites.user_id = {}'.format(u_id))
         
