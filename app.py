@@ -37,7 +37,8 @@ with open('./embedding_many.pickle', 'rb') as f:
 
 
 connect_db(app)
-db.create_all()
+with app.app_context():
+    db.create_all()
 app.app_context().push()
 
 
