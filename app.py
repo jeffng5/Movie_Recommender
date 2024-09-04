@@ -25,7 +25,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 with app.app_context():
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("URL")
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("URL1")
     app.config['SQLALCHEMY_RECORD_QUERIES'] = True
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_ECHO'] = True
@@ -320,7 +320,7 @@ def watch_movie():
 @app.route('/favorited-watched')
 def get_favorited():
     u_id = session['user_id']
-    engine = create_engine(os.environ.get("URL"))
+    engine = create_engine(os.environ.get("URL1"))
     with engine.connect() as connection:
         result = connection.execute('SELECT movies.id, movies.title, movies.image, favorites.user_id FROM favorites INNER JOIN movies ON movies.id = favorites.movie_id WHERE favorites.user_id = {}'.format(u_id))
         
