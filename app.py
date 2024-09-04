@@ -30,7 +30,7 @@ with app.app_context():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_ECHO'] = True
     app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
-
+    app.config['SECRET_KEY'] = "it's a secret"
 
 #opening the file
 with open('./embedding_many.pickle', 'rb') as f:
