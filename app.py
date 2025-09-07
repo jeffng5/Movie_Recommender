@@ -25,7 +25,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 with app.app_context():
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("URL1")
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("URL2")
     app.config['SQLALCHEMY_RECORD_QUERIES'] = True
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_ECHO'] = True
