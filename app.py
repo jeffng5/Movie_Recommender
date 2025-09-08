@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, flash, redirect, session, jsonify, g, abort, url_for
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select
+from flask_executor import Executor
+import time
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
 from sqlalchemy import desc, create_engine
@@ -17,7 +19,8 @@ from werkzeug.urls import url_encode
 
         
 app = Flask(__name__)
-
+executor = Executor(app)
+progress = {"percent": 0}
 # db.create_all()
 # app.app_context().push()
 CORS(app)
@@ -31,14 +34,19 @@ with app.app_context():
     app.config['SQLALCHEMY_ECHO'] = True
     app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
     app.config['SECRET_KEY'] = "it's a secret"
-  
+
+
 connect_db(app)
 #opening the file
 with open('./embedding_many.pickle', 'rb') as f:
     embedding_many = pickle.load(f)
 
 
-
+def long_task():
+    for i in range(1, 21):
+        time.sleep(1)  # simulate work
+        progress["percent"] = i * 5  # update progress
+    progress["percent"] = 100
 
 
 
@@ -170,6 +178,9 @@ def single_movie(id):
     if type(id) != int():
         flash("the url must be a valid integer")
     user_id = session['user_id']
+    
+    progress["percent"] = 0
+    executor.submit(long_task)  # run in background
 
     if request.method == 'POST':
         
@@ -219,6 +230,7 @@ def prepare(x):
 
 @app.route('/recommendation/<int:id>')
 def recommend_movie(id):
+    
     film= Movie.query.filter(Movie.id==id).first()
     movie_details= Movie.query.filter(Movie.id==id).first()
     # movie_details= [movie_details[x].overview for x in range(len(movie_details))]
@@ -330,9 +342,11 @@ def get_favorited():
         print(watched)
     return render_template('favorited-watched.html', result = result, watched= watched) 
     
-    
-   
 
+
+@app.route("/progress")
+def get_progress():
+    return jsonify(progress)
 
 
 

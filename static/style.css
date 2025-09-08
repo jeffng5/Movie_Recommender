@@ -54,7 +54,7 @@ color: gray;
 
 .watched-movie{
 position: relative;
-top: -250px;
+bottom: 360px;
 left: 218px;
 color: gray;
 }
@@ -99,9 +99,9 @@ img.watched-movie-grid{
 }
 
 #rec{
-position: absolute;
+/* position: absolute;
 top: 235px;
-left: 215px;
+left: 215px; */
 border-radius : 8px;
 padding: 10px;
 background-color: goldenrod;
@@ -154,4 +154,24 @@ margin-bottom: 20px;
 .result-watched {
   display: inline-block;
   margin: 25px;
+  position: relative:
+  bottom: 50px;
+}
+
+#prog {
+  margin-left: 5px;
+  }
+
+#rec-ele {
+  position: relative;
+  bottom: 100px;
+  left: 220px;
+}
+
+#percent {
+  position: relative;
+  bottom: 12px;
+  margin-left: 5px;
+
+
 }

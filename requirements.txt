@@ -17,6 +17,7 @@ Faker==0.9.1
 Flask
 Flask-Bcrypt
 Flask-Cors
+flask-executor
 Flask-SQLAlchemy
 Flask-WTF==0.14.3
 gunicorn

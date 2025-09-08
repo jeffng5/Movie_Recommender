@@ -15,20 +15,27 @@
 <img class= "poster" src="https://image.tmdb.org/t/p/original/{{movie.image}}" width="200" height="275">
 <img class="favorited-movie" src="../static/images/unliked.png">
 
+<form id='rec-ele' class = "recommend-movie" action="/recommendation/{{movie.id}}"><button onclick="startTask({{movie.id}})"id="rec">Show me MGDB recommends,</button>
+  <div id="prog" style="width: 220px; background: #eee; margin-top: 12px;">
+    <div id="bar" style="width: 0%; height: 15px; background: #00bfff ;"></div>
+  </div>
+  <p id="percent">Progress 0%</p>
+</form>
+
 <div><a href="/favorited-watched">SHOW FAVORITED/WATCHED MOVIES</a></div>
 <img class= "watched-movie" src="../static/images/check-eye.png" height= "40" width="40">
+
 <h3>{{movie.genre1}} / {{movie.genre2}}</h3>
 <h3>Synopsis: {{movie.summary}}</h3>
 <h3>Popularity Rating: {{movie.popularity}}</h3>
 
 
 
-<form class = "recommend-movie" action="/recommendation/{{movie.id}}"><button id="rec">Show me MGDB recommends,</button>
-</form>
 {%endfor%}
 <h3><a href="/intro">Start Over</a></h3>
 </body>
 
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="../static/script.js"></script>
+<script src= "../static/bar.js"></script>
 </html>
