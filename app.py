@@ -41,7 +41,7 @@ connect_db(app)
 with open('./embedding_many.pickle', 'rb') as f:
     embedding_many = pickle.load(f)
 
-
+progress = {"status": 0}
 
 def long_task():
     for i in range(1, 21):
@@ -180,7 +180,7 @@ def single_movie(id):
         flash("the url must be a valid integer")
     user_id = session['user_id']
     
-    progress["percent"] = 0
+    progress["status"] = 0
     executor.submit(long_task)  # run in background
 
     if request.method == 'POST':
