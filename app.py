@@ -20,7 +20,6 @@ from werkzeug.urls import url_encode
         
 app = Flask(__name__)
 executor = Executor(app)
-progress = {"percent": 0}
 # db.create_all()
 # app.app_context().push()
 CORS(app)
@@ -41,13 +40,13 @@ connect_db(app)
 with open('./embedding_many.pickle', 'rb') as f:
     embedding_many = pickle.load(f)
 
-progress = {"percent": 0}
+progress = {"status": 0}
 
 def long_task():
     for i in range(1, 21):
         time.sleep(1)  # simulate work
-        progress["percent"] = i * 5  # update progress
-    progress["percent"] = 100
+        progress["status"] = i * 5  # update progress
+    progress["status"] = 100
 
 
 
@@ -180,7 +179,7 @@ def single_movie(id):
         flash("the url must be a valid integer")
     user_id = session['user_id']
     
-    progress["percent"] = 0
+    
     executor.submit(long_task)  # run in background
 
     if request.method == 'POST':
