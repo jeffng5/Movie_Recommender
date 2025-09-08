@@ -42,6 +42,7 @@ with open('./embedding_many.pickle', 'rb') as f:
     embedding_many = pickle.load(f)
 
 
+
 def long_task():
     for i in range(1, 21):
         time.sleep(1)  # simulate work
