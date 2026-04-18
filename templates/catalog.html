@@ -1,22 +1,14 @@
-{%extends 'home.html'%}
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Movie Recommender</title>
-<script  src="static/script.js"></script>
-<link rel = "stylesheet" href="static/style.css" type="text/css">
-</head> 
+{% extends 'home.html' %}
 
-{%block content%}
-<body class = 'no-nav-bar'>
-<h3>Choose from below criteria</h3>
-<form method="POST">
-    {{form.hidden_tag()}}
-    {% for field in form
-        if field.widget.input_type != 'hidden' %}
-<p class="genre">{{field}}{{field.label}}</p>
-{%endfor%}
-<button class="bttn">Select criteria</button>
-</form>
-</body>
-{%endblock%}
+{% block content %}
+<div class="catalog-page">
+  <h3>Choose from below criteria</h3>
+  <form method="POST" class="catalog-form">
+    {{ form.hidden_tag() }}
+    {% for field in form if field.widget.input_type != 'hidden' %}
+      <p class="genre">{{ field }}</p>
+    {% endfor %}
+    <button type="submit" class="bttn">Select criteria</button>
+  </form>
+</div>
+{% endblock %}

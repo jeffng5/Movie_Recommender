@@ -2,21 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Movie Recommender</title>
-
-
-<link rel = "stylesheet" href="static/style.css" type="text/css">
-
+  <link rel="stylesheet" href="static/style.css" type="text/css">
 </head>
 
+<body class="movie-details-page">
 {%for movie in movie_details%}
 
 <h3 class= 'movie' id="{{movie.id}}">{{movie.title}}</h3>
-<img class= "poster" src="https://image.tmdb.org/t/p/original/{{movie.image}}" width="200" height="275">
-<img class="favorited-movie" src="../static/images/liked.png">
+<div class="movie-details-poster-wrap">
+  <img class="poster" src="https://image.tmdb.org/t/p/original/{{ movie.image }}" width="160" height="220" alt="">
+  <div class="movie-details-icon-row" aria-label="Favorite and watched">
+    <img class="favorited-movie" src="../static/images/liked.png" width="40" height="40" alt="Favorite">
+    <img class="watched-movie" src="../static/images/check-eye.png" width="40" height="40" alt="Watched">
+  </div>
+</div>
 
 <div><a href="/favorited-watched">SHOW FAVORITED/WATCHED MOVIES</a></div>
-<img class= "watched-movie" src="../static/images/check-eye.png" height= "40" width="40">
 <h3>{{movie.genre1}} / {{movie.genre2}}</h3>
 
 
@@ -24,9 +27,11 @@
 
 
 
-<form class = "recommend-movie" action="/recommendation/{{movie.id}}"><button id="rec">Show me MGDB recommends,</button>
+<form class = "recommend-movie" action="/recommendation/{{movie.id}}"><button id="rec">MGDB recommend</button>
 </form>
 {%endfor%}
 <h3><a href="/intro">Start Over</a></h3>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script  src="static/script.js"></script>
+<script src="static/script.js"></script>
+</body>
+</html>

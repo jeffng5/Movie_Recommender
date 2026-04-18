@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Movie Recommender</title>
 
 
@@ -9,21 +10,28 @@
 
 </head>
 
-<body>
+<body class="movie-details-page">
 {%for movie in movie_details%}
 <h3 class= 'movie' id="{{movie.id}}">{{movie.title}}</h3>
-<img class= "poster" src="https://image.tmdb.org/t/p/original/{{movie.image}}" width="200" height="275">
-<img class="favorited-movie" src="../static/images/unliked.png">
-
-<form id='rec-ele' class = "recommend-movie" action="/recommendation/{{movie.id}}"><button onclick="startTask({{movie.id}})"id="rec">Show me MGDB recommends,</button>
-  <div id="prog" style="width: 220px; background: #eee; margin-top: 12px;">
-    <div id="bar" style="width: 0%; height: 15px; background: #00bfff ;"></div>
+<div class="movie-details-main-col">
+<div class="movie-details-poster-wrap">
+  <img class="poster" src="https://image.tmdb.org/t/p/original/{{ movie.image }}" width="160" height="220" alt="">
+  <div class="movie-details-icon-row" aria-label="Favorite and watched">
+    <img class="favorited-movie" src="../static/images/unliked.png" width="40" height="40" alt="Favorite">
+    <img class="watched-movie" src="../static/images/check-eye.png" width="40" height="40" alt="Watched">
   </div>
-  <p id="percent">Progress 0%</p>
+</div>
+
+<form id="rec-ele" class="recommend-movie" action="/recommendation/{{movie.id}}" onsubmit="return false;">
+  <button type="button" onclick="startTask({{movie.id}})" id="rec">MGDB recommend</button>
+  <div id="prog" style="background: #eee; margin-top: 12px; min-height: 32px;">
+    <div id="bar" style="width: 0%;"></div>
+    <span id="prog-pct-label" class="prog-pct-label">0%</span>
+  </div>
 </form>
+</div>
 
 <div><a href="/favorited-watched">SHOW FAVORITED/WATCHED MOVIES</a></div>
-<img class= "watched-movie" src="../static/images/check-eye.png" height= "40" width="40">
 
 <h3>{{movie.genre1}} / {{movie.genre2}}</h3>
 <h3>Synopsis: {{movie.summary}}</h3>
@@ -33,9 +41,8 @@
 
 {%endfor%}
 <h3><a href="/intro">Start Over</a></h3>
-</body>
-
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="../static/script.js"></script>
-<script src= "../static/bar.js"></script>
+<script src="../static/bar.js"></script>
+</body>
 </html>

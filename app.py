@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, flash, redirect, session, jso
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select
 from flask_executor import Executor
-import time
+import spacy
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
 from sqlalchemy import desc, create_engine
@@ -40,15 +40,13 @@ connect_db(app)
 with open('./embedding_many.pickle', 'rb') as f:
     embedding_many = pickle.load(f)
 
-progress = {"status": 0}
+progress = {"percent": 0, "running": False, "error": None}
+recommendation_cache = {}
 
-def long_task():
-    for i in range(1, 21):
-        time.sleep(1)  # simulate work
-        progress["status"] = i * 5  # update progress
-    progress["status"] = 100
-
-
+SEARCH_RESULTS_PER_PAGE = 60
+CATALOG_RESULTS_PER_PAGE = 60
+SESSION_SEARCH_TITLE_KEY = "search_movie_title"
+SESSION_CATALOG_GENRE_KEY = "catalog_genre"
 
 @app.route('/')
 def home():
@@ -119,54 +117,98 @@ def intro():
 
 @app.route('/search', methods=['GET','POST'])
 def search_movie():
-   
-
     form = MovieForm()
+    page = request.args.get('page', 1, type=int) or 1
+    if page < 1:
+        page = 1
+
     if form.validate_on_submit():
-        
-        watched_movies = Movie.query.filter(Movie.id==Watched.movie_id, Watched.user_id==session['user_id']).all()
-        favorited_movies = Movie.query.filter(Movie.id==Favorite.movie_id, Watched.user_id==session['user_id']).all()
-        term = form.title.data
-        try:
-            list_of_movies = Movie.query.filter(Movie.title.ilike("%" + term + "%")).order_by(Movie.popularity.desc())
-        except: 
-            len(list_of_movies)==0
-            return render_template('error.html')
-        u_id= session['user_id']
+        session[SESSION_SEARCH_TITLE_KEY] = (form.title.data or "").strip()
+        return redirect(url_for('search_movie', page=1))
 
+    if request.method == 'GET' and request.args.get('page') is None:
+        session.pop(SESSION_SEARCH_TITLE_KEY, None)
+        return render_template("search.html", form=form)
 
-        # favorite= Favorite(user_id=u_id, movie_id=m_id)
-        # db.session.add(favorite)
-        # db.session.commit()
-    
-        return render_template("select.html", list_of_movies= list_of_movies, favorited_movies= favorited_movies, watched_movies= watched_movies)
-    else:
-        return render_template("search.html", form = form) 
+    term = session.get(SESSION_SEARCH_TITLE_KEY) or ""
+    if not term:
+        return render_template("search.html", form=form)
+
+    watched_movies = Movie.query.filter(
+        Movie.id == Watched.movie_id, Watched.user_id == session['user_id']
+    ).all()
+    favorited_movies = Movie.query.filter(
+        Movie.id == Favorite.movie_id, Watched.user_id == session['user_id']
+    ).all()
+
+    query = Movie.query.filter(
+        Movie.title.ilike("%" + term + "%"),
+        Movie.image.isnot(None),
+        Movie.image != "",
+    ).order_by(Movie.popularity.desc())
+    pagination = query.paginate(
+        page=page, per_page=SEARCH_RESULTS_PER_PAGE, error_out=False
+    )
+    if pagination.total == 0:
+        return render_template("error.html")
+
+    return render_template(
+        "select.html",
+        list_of_movies=pagination.items,
+        pagination=pagination,
+        favorited_movies=favorited_movies,
+        watched_movies=watched_movies,
+    )
 
 
 
 
 @app.route('/catalog', methods=['GET', 'POST'])
 def browse():
-
     form = CatalogForm()
-    if form.validate_on_submit():
-        genres = form.genres.data
-        
-        list_of_movies_by_genres = Movie.query.filter_by(genre1 = genres).order_by(Movie.popularity.desc())
-       
-        # first_list = list_of_movies_by_genres[:200]
-        # second_list = list_of_movies_by_genres[200:400]
-        # third_list = list_of_movies_by_genres[400:600]
-        # fourth_list = list_of_movies_by_genres[600:800]
-        # fifth_list = list_of_movies_by_genres[800:1000]
+    page = request.args.get('page', 1, type=int) or 1
+    if page < 1:
+        page = 1
 
-        
-        return render_template('last_page.html', list_of_movies_by_genres=list_of_movies_by_genres)
-            #list_of_movies_by_pop= list_of_movies_by_pop) 
-                               #list_of_movies_by_vote_averages= list_of_movies_by_vote_averages)
-    else:
+    if request.method == 'POST' and form.validate_on_submit():
+        session[SESSION_CATALOG_GENRE_KEY] = form.genres.data
+        return redirect(url_for('browse', page=1))
+
+    if request.method == 'GET' and request.args.get('page') is None:
+        session.pop(SESSION_CATALOG_GENRE_KEY, None)
         return render_template('catalog.html', form=form)
+
+    genre = session.get(SESSION_CATALOG_GENRE_KEY)
+    if not genre:
+        return render_template('catalog.html', form=form)
+
+    uid = session.get('user_id')
+    if uid:
+        watched_movies = Movie.query.filter(
+            Movie.id == Watched.movie_id, Watched.user_id == uid
+        ).all()
+        favorited_movies = Movie.query.filter(
+            Movie.id == Favorite.movie_id, Favorite.user_id == uid
+        ).all()
+    else:
+        watched_movies = []
+        favorited_movies = []
+
+    query = Movie.query.filter_by(genre1=genre).order_by(Movie.popularity.desc())
+    pagination = query.paginate(
+        page=page, per_page=CATALOG_RESULTS_PER_PAGE, error_out=False
+    )
+    if pagination.total == 0:
+        return render_template('error.html')
+
+    return render_template(
+        'last_page.html',
+        list_of_movies=pagination.items,
+        pagination=pagination,
+        genre=genre,
+        favorited_movies=favorited_movies,
+        watched_movies=watched_movies,
+    )
 
 # Movie.query.filter(Movie.title.ilike("%" + term + "%")).all()
 #    left inner join
@@ -178,9 +220,6 @@ def single_movie(id):
     if type(id) != int():
         flash("the url must be a valid integer")
     user_id = session['user_id']
-    
-    
-    executor.submit(long_task)  # run in background
 
     if request.method == 'POST':
         
@@ -214,7 +253,7 @@ def logout():
     flash(f'LOGOUT SUCCESSFUL!!')
     return render_template('home.html')
 
-import spacy
+
 # spacy.cli.download("en_core_web_lg")
 nlp = spacy.load("en_core_web_lg")
 spacy_tokenizer=nlp.tokenizer
@@ -228,59 +267,109 @@ def prepare(x):
     embedding_many=nlp(x).vector.reshape(300,)
     return embedding_many
 
-@app.route('/recommendation/<int:id>')
-def recommend_movie(id):
-    
-    film= Movie.query.filter(Movie.id==id).first()
-    movie_details= Movie.query.filter(Movie.id==id).first()
-    # movie_details= [movie_details[x].overview for x in range(len(movie_details))]
-    all_movie_details= Movie.query.all()
-    
-    total_movie_details=list(all_movie_details[14000:])
-    movie_details= movie_details.overview
-    # total = [total_movie_details[x].overview for x in range(0,len(total_movie_details))]
-    
-    embedding=prep(movie_details)
-        
-    listA=[]
-    # turning the strings into word embeddings
-    # embedding_many=[]
-    # for x in total:
-    #     try:
-    #         embedding_many.append(prepare(x))
-    #     except:
-    #         pass
-   
 
-    
-    
-    # pickling the file
-    # with open ('embedding_many.pickle', 'wb') as f:
-    #     pickle.dump(embedding_many, f, 5)
+def _compute_sorted_recommendations(movie_id, on_progress=None):
+    """Cosine-similarity pipeline. Optional on_progress(percent) updates 0–100."""
+    film = Movie.query.filter(Movie.id == movie_id).first()
+    if not film:
+        raise ValueError("Movie not found")
 
-    #computing the dot product and cosine similarity
-  
-    for i in range(len(embedding_many[14000:])):
-        listA.append(np.dot(embedding_many[i], embedding)/(np.sqrt(np.sum(np.square(embedding_many[i])))*np.sqrt(np.sum(np.square(embedding)))))
-    
+    def bump(p):
+        if on_progress:
+            on_progress(min(100, int(p)))
 
-    df0= pd.Series(listA)
-    df1= pd.Series([num for num in range(0,len(listA))])
-    frames=[df1, df0]
-    work= pd.concat(frames, axis=1)
-    work['cos_sim']=listA
-    #sorting the cosine similarities
-    idx=work['cos_sim'].sort_values(ascending=False)[1:11].index 
-    
+    all_movie_details = Movie.query.all()
+    total_movie_details = list(all_movie_details[14000:])
+    overview_text = film.overview
+    bump(2)
 
-    sorted_movies=[]
+    embedding = prep(overview_text)
+    bump(6)
+
+    slice_emb = embedding_many[14000:]
+    total = len(slice_emb)
+    listA = []
+    if total == 0:
+        bump(100)
+        return film, []
+
+    report_every = max(1, total // 80)
+    for i in range(total):
+        row = slice_emb[i]
+        listA.append(
+            np.dot(row, embedding)
+            / (
+                np.sqrt(np.sum(np.square(row)))
+                * np.sqrt(np.sum(np.square(embedding)))
+            )
+        )
+        if on_progress and (i % report_every == 0 or i == total - 1):
+            bump(6 + (90 * (i + 1) / total))
+
+    bump(93)
+    df0 = pd.Series(listA)
+    df1 = pd.Series([num for num in range(0, len(listA))])
+    frames = [df1, df0]
+    work = pd.concat(frames, axis=1)
+    work["cos_sim"] = listA
+    idx = work["cos_sim"].sort_values(ascending=False)[1:11].index
+
+    sorted_movies = []
     for num in idx:
         sorted_movies.append(total_movie_details[num])
-    
-    
-    
-    
-    return render_template('recommend.html', film= film, sorted_movies=sorted_movies)
+
+    bump(100)
+    return film, sorted_movies
+
+
+def recommend_job(app, movie_id):
+    global progress, recommendation_cache
+    with app.app_context():
+        try:
+            progress.clear()
+            progress.update({"percent": 0, "running": True, "error": None})
+
+            def bump(p):
+                progress["percent"] = min(100, int(p))
+
+            film, sorted_movies = _compute_sorted_recommendations(movie_id, bump)
+            recommendation_cache[movie_id] = {
+                "film_id": film.id,
+                "sorted_ids": [m.id for m in sorted_movies],
+            }
+            progress["percent"] = 100
+            progress["running"] = False
+        except Exception as e:
+            progress["running"] = False
+            progress["error"] = str(e)
+            progress["percent"] = 0
+
+
+@app.route("/recommendation/start/<int:movie_id>", methods=["POST"])
+def start_recommendation(movie_id):
+    if progress.get("running"):
+        return jsonify({"error": "Recommendation already in progress"}), 409
+    executor.submit(recommend_job, app, movie_id)
+    return jsonify({"started": True})
+
+
+@app.route('/recommendation/<int:id>')
+def recommend_movie(id):
+    cached = recommendation_cache.pop(id, None)
+    if cached:
+        film = Movie.query.filter(Movie.id == cached["film_id"]).first()
+        ids = cached["sorted_ids"]
+        if not film:
+            return render_template("error.html")
+        if not ids:
+            sorted_movies = []
+        else:
+            by_id = {m.id: m for m in Movie.query.filter(Movie.id.in_(ids)).all()}
+            sorted_movies = [by_id[i] for i in ids if i in by_id]
+        return render_template("recommend.html", film=film, sorted_movies=sorted_movies)
+
+    film, sorted_movies = _compute_sorted_recommendations(id, on_progress=None)
+    return render_template("recommend.html", film=film, sorted_movies=sorted_movies)
                     
 
 
@@ -346,7 +435,13 @@ def get_favorited():
 
 @app.route("/progress")
 def get_progress():
-    return jsonify(progress)
+    return jsonify(
+        {
+            "percent": progress.get("percent", 0),
+            "running": progress.get("running", False),
+            "error": progress.get("error"),
+        }
+    )
 
 
 

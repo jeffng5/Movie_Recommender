@@ -2,35 +2,60 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Movie Recommender</title>
-
-<link rel = "stylesheet" href="static/style.css" type="text/css">
-
+  <link rel="stylesheet" href="static/style.css" type="text/css">
 </head>
+<body class="no-nav-bar select-page">
+  <div class="select-page-intro">
+    <header class="select-top-bar">
+      <h3 id="heading">HERE ARE YOUR SEARCH RESULTS:</h3>
+    </header>
+    <p class="select-pagination-meta">
+      Page {{ pagination.page }} of {{ pagination.pages }}
+      &middot; {{ pagination.total }} movies
+    </p>
+    <a href="/intro" class="select-start-over-btn">Start Over</a>
+  </div>
 
-<h3 id="heading">HERE ARE YOUR SEARCH RESULTS:</h3>
+  <div class="select-results-grid">
+    {% for movie in list_of_movies %}
+      <div class="columnar">
+        <div class="select-movie-tile">
+          <a class="title-detail" href="/{{ movie.id }}">
+            <p class="title">{{ movie.title }}</p>
+            <img class="poster" src="https://image.tmdb.org/t/p/original/{{ movie.image }}" width="160" height="240" alt="{{ movie.title }}">
+          </a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
 
-<body class='no-nav-bar'>
-  <div class="grid-container"></div>    
-{%for movie in list_of_movies%}
+  {% if pagination.pages > 1 %}
+  <nav class="select-pagination" aria-label="Search results pages">
+    {% if pagination.has_prev %}
+      <a href="{{ url_for('search_movie', page=pagination.prev_num) }}">Previous</a>
+    {% endif %}
+    {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+      {% if p %}
+        {% if p != pagination.page %}
+          <a href="{{ url_for('search_movie', page=p) }}">{{ p }}</a>
+        {% else %}
+          <span class="select-pagination-current">{{ p }}</span>
+        {% endif %}
+      {% else %}
+        <span class="select-pagination-ellipsis">…</span>
+      {% endif %}
+    {% endfor %}
+    {% if pagination.has_next %}
+      <a href="{{ url_for('search_movie', page=pagination.next_num) }}">Next</a>
+    {% endif %}
+  </nav>
+  {% endif %}
 
-
-<div class="columnar">
-<a id="title-detail" href="/{{movie.id}}"><p class="title">{{movie.title}}</p></a> 
-<img class= "poster" src="https://image.tmdb.org/t/p/original/{{movie.image}}" width="70" height="75">  
-<!-- <img class="favorited-movie-grid" id= "favorite" src="../static/images/unliked.png"> 
-<img class= "watched-movie-grid" src="../static/images/check-eye.png" height = "25" width= '25'> -->
-</div>
-{%endfor%}
-
-
-
-
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script type="module" src="icon-listing.js"></script>
+  <script src="static/icon-listing.js"></script>
 </body>
-
-<p><h3><a href="/intro">Start Over</a></h3></p>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>  
-
-<script type="module" src="icon-listing.js"></script>
-<script src='static/icon-listing.js'></script>
+</html>

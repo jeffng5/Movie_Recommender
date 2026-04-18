@@ -1,18 +1,22 @@
 {%extends 'home.html'%}
 
 {%block content%}
-<h2>Register</h2>
+<div class="signup-page">
+  <h2>Register</h2>
 
-<h3>Register for our site</h3>
-<form action='/signup' method="POST">
-{{form.hidden_tag()}}
-    {% for field in form 
-        if field.widget.input_type != 'hidden' %}
-    <p>{{field.label}}{{field}}</p>
-{%endfor%}
+  <form action="/signup" method="POST">
+    {{ form.hidden_tag() }}
+    {% for field in form if field.widget.input_type != 'hidden' %}
+      <p class="signup-field">
+        {% for error in field.errors %}
+          <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+        {{ field(placeholder=field.label.text, class="form-control") }}
+      </p>
+    {% endfor %}
 
-
-<button>Register</button>
-</form>
+    <button type="submit" class="signup-button">Register</button>
+  </form>
+</div>
 
 {%endblock%}

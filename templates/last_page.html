@@ -1,19 +1,62 @@
-{%extends 'home.html'%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Recommender</title>
+  <link rel="stylesheet" href="static/style.css" type="text/css">
+</head>
+<body class="no-nav-bar select-page">
+  <div class="select-page-intro">
+    <header class="select-top-bar">
+      <h3 id="heading">HERE ARE YOUR MOVIES:</h3>
+    </header>
+    <p class="select-pagination-meta">
+      {{ genre }}
+      &middot; Page {{ pagination.page }} of {{ pagination.pages }}
+      &middot; {{ pagination.total }} movies
+    </p>
+    <a href="/intro" class="select-start-over-btn">Start Over</a>
+  </div>
 
+  <div class="select-results-grid">
+    {% for movie in list_of_movies %}
+      <div class="columnar">
+        <div class="select-movie-tile">
+          <a class="title-detail" href="/{{ movie.id }}">
+            <p class="title">{{ movie.title }}</p>
+            <img class="poster" src="https://image.tmdb.org/t/p/original/{{ movie.image }}" width="160" height="240" alt="{{ movie.title }}">
+          </a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
 
-{%block content%}
+  {% if pagination.pages > 1 %}
+  <nav class="select-pagination" aria-label="Catalog genre pages">
+    {% if pagination.has_prev %}
+      <a href="{{ url_for('browse', page=pagination.prev_num) }}">Previous</a>
+    {% endif %}
+    {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+      {% if p %}
+        {% if p != pagination.page %}
+          <a href="{{ url_for('browse', page=p) }}">{{ p }}</a>
+        {% else %}
+          <span class="select-pagination-current">{{ p }}</span>
+        {% endif %}
+      {% else %}
+        <span class="select-pagination-ellipsis">…</span>
+      {% endif %}
+    {% endfor %}
+    {% if pagination.has_next %}
+      <a href="{{ url_for('browse', page=pagination.next_num) }}">Next</a>
+    {% endif %}
+  </nav>
+  {% endif %}
 
-<body class= "no-nav-bar">
-<h3>HERE ARE YOUR RECOMMENDED MOVIES:
-
-<div class="grid-columnar"></div>    
-{% for obj in list_of_movies_by_genres%}
-<div class="grid-item"><img class= "poster" src="https://image.tmdb.org/t/p/original/{{obj.image}}" width="70" height="75"> 
-<a class = "font-color" href="/{{obj.id}}">{{obj.title}}</a>
-</div>
-
-{%endfor%}
-
-<h3><a class= "reset" href='/intro'>Start Over</a></h3>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script type="module" src="icon-listing.js"></script>
+  <script src="static/icon-listing.js"></script>
 </body>
-{%endblock%}
+</html>

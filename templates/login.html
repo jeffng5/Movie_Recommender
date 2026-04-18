@@ -5,12 +5,12 @@
   <title>Movie Recommender</title>
 <link rel = "stylesheet" href="static/style.css" type="text/css">
 </head>
-
-
-
-
+<body class="login-page">
   <div class="row justify-content-md-center">
     <div class="col-md-7 col-lg-5">
+      <p class="login-back">
+        <a href="{{ url_for('home') }}" class="login-back-button">Back to home</a>
+      </p>
       <h2 class="join-message">Please Log In to Movie Geeks DB</h2>
 
       <form action='/login' method="POST" id="user_form">
@@ -23,7 +23,9 @@
           {{ field(placeholder=field.label.text, class="form-control") }}
         {% endfor %}
 
-        <button class="login-button">Log in</button>
+        <button type="submit" class="login-button">Log in</button>
       </form>
     </div>
   </div>
+</body>
+</html>

@@ -1,18 +1,17 @@
 {%extends 'home.html'%}
 
 
-{%block content%}
-<body class= "no-nav-bar">
-<h3>Search for Movie</h3>
-<form method="POST">
-    {{form.hidden_tag()}}
-    {% for field in form
-        if field.widget.input_type != 'hidden' %}
-<p>{{field}}{{field.label}}</p>
-{%endfor%}
-<button class="bttn">Start Search</button>
-</form>
+{% block content %}
+<div class="search-page">
+  <h3>Search for Movie</h3>
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    {% for field in form if field.widget.input_type != 'hidden' %}
+      <p class="search-field">{{ field }}{{ field.label }}</p>
+    {% endfor %}
+    <button type="submit" class="bttn">Start Search</button>
+  </form>
 
-<button class="bttn"><a class= "catalog" href= "/catalog">Browse Catalog Instead</a></button>
-</body>
-{%endblock%}
+  <a class="bttn catalog" href="/catalog">Browse Catalog Instead</a>
+</div>
+{% endblock %}
