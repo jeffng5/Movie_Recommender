@@ -642,11 +642,19 @@ margin-bottom: 20px;
   position: relative;
   margin-left: 0;
   width: 100%;
-  min-width: 0;
+  min-width: 100%;
   align-self: stretch;
+  box-sizing: border-box;
+}
+
+/* In-flow track so % width on #bar resolves; label stays position:absolute */
+#prog .prog-fill-track {
+  width: 100%;
+  height: 32px;
   min-height: 32px;
   border-radius: 4px;
   overflow: hidden;
+  background-color: #eee;
   box-sizing: border-box;
 }
 
@@ -655,7 +663,7 @@ margin-bottom: 20px;
   left: 0;
   right: 0;
   top: 0;
-  bottom: 0;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -672,7 +680,8 @@ margin-bottom: 20px;
 #bar {
   position: relative;
   z-index: 0;
-  height: 32px;
+  width: 0%;
+  height: 100%;
   min-height: 32px;
   box-sizing: border-box;
   border-radius: 3px;

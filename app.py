@@ -14,11 +14,14 @@ from forms import MovieForm, CatalogForm, UserAddForm, LoginForm
 from models import db, connect_db, Movie, Tag, User, Favorite, Watched
 import numpy as np
 import os
+import time
+import threading
 from werkzeug.urls import url_encode
 
 
         
 app = Flask(__name__)
+app.config.setdefault("EXECUTOR_TYPE", "thread")
 executor = Executor(app)
 # db.create_all()
 # app.app_context().push()
@@ -41,6 +44,7 @@ with open('./embedding_many.pickle', 'rb') as f:
     embedding_many = pickle.load(f)
 
 progress = {"percent": 0, "running": False, "error": None}
+_progress_lock = threading.RLock()
 recommendation_cache = {}
 
 SEARCH_RESULTS_PER_PAGE = 60
@@ -278,13 +282,35 @@ def _compute_sorted_recommendations(movie_id, on_progress=None):
         if on_progress:
             on_progress(min(100, int(p)))
 
-    all_movie_details = Movie.query.all()
+    bump(2)
+    n_movies = Movie.query.count()
+    if not n_movies:
+        raise ValueError("No movies in database")
+
+    # Stream rows so we can report progress during the long load (query.all() was one giant gap at 2%).
+    all_movie_details = []
+    last_report_t = time.monotonic()
+    emit_every = max(200, n_movies // 80)
+    for m in Movie.query.yield_per(2000):
+        all_movie_details.append(m)
+        l = len(all_movie_details)
+        if on_progress:
+            t = time.monotonic()
+            if (
+                l == n_movies
+                or l % emit_every == 0
+                or (t - last_report_t) >= 0.1
+            ):
+                bump(2 + int(20 * l / n_movies))
+                last_report_t = t
+
     total_movie_details = list(all_movie_details[14000:])
     overview_text = film.overview
-    bump(2)
+    bump(23)
 
+    bump(24)
     embedding = prep(overview_text)
-    bump(6)
+    bump(29)
 
     slice_emb = embedding_many[14000:]
     total = len(slice_emb)
@@ -293,7 +319,10 @@ def _compute_sorted_recommendations(movie_id, on_progress=None):
         bump(100)
         return film, []
 
-    report_every = max(1, total // 80)
+    # Cosine loop: 29–95% (wall-clock + index so fast loops still surface on /progress).
+    report_every = max(1, total // 200)
+    last_report_t = time.monotonic()
+    min_report_gap_s = 0.07
     for i in range(total):
         row = slice_emb[i]
         listA.append(
@@ -303,10 +332,15 @@ def _compute_sorted_recommendations(movie_id, on_progress=None):
                 * np.sqrt(np.sum(np.square(embedding)))
             )
         )
-        if on_progress and (i % report_every == 0 or i == total - 1):
-            bump(6 + (90 * (i + 1) / total))
+        if on_progress:
+            t = time.monotonic()
+            at_step = i % report_every == 0
+            at_end = i == total - 1
+            if at_end or at_step or (t - last_report_t) >= min_report_gap_s:
+                bump(29 + (66 * (i + 1) / total))
+                last_report_t = t
 
-    bump(93)
+    bump(97)
     df0 = pd.Series(listA)
     df1 = pd.Series([num for num in range(0, len(listA))])
     frames = [df1, df0]
@@ -323,32 +357,37 @@ def _compute_sorted_recommendations(movie_id, on_progress=None):
 
 
 def recommend_job(app, movie_id):
-    global progress, recommendation_cache
     with app.app_context():
         try:
-            progress.clear()
-            progress.update({"percent": 0, "running": True, "error": None})
+            with _progress_lock:
+                progress["percent"] = 0
+                progress["error"] = None
 
             def bump(p):
-                progress["percent"] = min(100, int(p))
+                with _progress_lock:
+                    progress["percent"] = min(100, int(p))
 
             film, sorted_movies = _compute_sorted_recommendations(movie_id, bump)
             recommendation_cache[movie_id] = {
                 "film_id": film.id,
                 "sorted_ids": [m.id for m in sorted_movies],
             }
-            progress["percent"] = 100
-            progress["running"] = False
+            with _progress_lock:
+                progress["percent"] = 100
+                progress["running"] = False
         except Exception as e:
-            progress["running"] = False
-            progress["error"] = str(e)
-            progress["percent"] = 0
+            with _progress_lock:
+                progress["running"] = False
+                progress["error"] = str(e)
+                progress["percent"] = 0
 
 
 @app.route("/recommendation/start/<int:movie_id>", methods=["POST"])
 def start_recommendation(movie_id):
-    if progress.get("running"):
-        return jsonify({"error": "Recommendation already in progress"}), 409
+    with _progress_lock:
+        if progress.get("running"):
+            return jsonify({"error": "Recommendation already in progress"}), 409
+        progress.update({"percent": 0, "running": True, "error": None})
     executor.submit(recommend_job, app, movie_id)
     return jsonify({"started": True})
 
@@ -435,13 +474,17 @@ def get_favorited():
 
 @app.route("/progress")
 def get_progress():
-    return jsonify(
-        {
-            "percent": progress.get("percent", 0),
-            "running": progress.get("running", False),
+    with _progress_lock:
+        payload = {
+            "percent": int(progress.get("percent", 0) or 0),
+            "running": bool(progress.get("running", False)),
             "error": progress.get("error"),
         }
-    )
+    resp = jsonify(payload)
+    resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    resp.headers["Pragma"] = "no-cache"
+    resp.headers["Expires"] = "0"
+    return resp
 
 
 

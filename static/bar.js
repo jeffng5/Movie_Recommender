@@ -1,8 +1,9 @@
-function setProgressPercent(p, labelText) {
-  const bar = document.getElementById("bar");
-  const onBar = document.getElementById("prog-pct-label");
-  const raw = Number(p);
-  const pClamped = Math.min(
+function setProgressPercent(p, labelText, root) {
+  var scope = root && root.querySelector ? root : document;
+  var bar = scope.querySelector("#bar");
+  var onBar = scope.querySelector("#prog-pct-label");
+  var raw = Number(p);
+  var pClamped = Math.min(
     100,
     Math.max(0, Math.round(Number.isFinite(raw) ? raw : 0))
   );
@@ -18,11 +19,15 @@ function setProgressPercent(p, labelText) {
   return pClamped;
 }
 
-function startTask(id) {
-  const bar = document.getElementById("bar");
+function startTask(button, id) {
+  var root =
+    button && button.closest ? button.closest("#rec-ele") : null;
+  if (!root) root = document;
+
+  var bar = root.querySelector("#bar");
   if (!bar) return;
 
-  setProgressPercent(0);
+  setProgressPercent(0, undefined, root);
 
   fetch("/recommendation/start/" + id, {
     method: "POST",
@@ -38,37 +43,46 @@ function startTask(id) {
       return res.json();
     })
     .then(function () {
-      pollProgress(id);
+      pollProgress(id, root);
     })
     .catch(function (err) {
-      const msg = err.message || "Could not start";
-      const short = msg.length > 24 ? msg.slice(0, 21) + "…" : msg;
-      setProgressPercent(0, short);
+      var msg = err.message || "Could not start";
+      var short = msg.length > 24 ? msg.slice(0, 21) + "…" : msg;
+      setProgressPercent(0, short, root);
     });
 }
 
-function pollProgress(id) {
-  const interval = setInterval(function () {
-    fetch("/progress")
+function pollProgress(id, root) {
+  var interval = setInterval(function () {
+    fetch("/progress?_=" + Date.now(), { cache: "no-store" })
       .then(function (res) {
         return res.json();
       })
       .then(function (data) {
-        if (!document.getElementById("bar")) return;
+        var scope = root && root.querySelector ? root : document;
+        if (!scope.querySelector("#bar")) return;
 
-        const p = setProgressPercent(data.percent);
+        var pct = Number(data.percent);
+        var p = setProgressPercent(
+          Number.isFinite(pct) ? pct : 0,
+          undefined,
+          scope
+        );
 
         if (data.error) {
           clearInterval(interval);
-          const err = String(data.error);
-          const short = err.length > 24 ? err.slice(0, 21) + "…" : err;
-          setProgressPercent(0, short);
+          var err = String(data.error);
+          var short = err.length > 24 ? err.slice(0, 21) + "…" : err;
+          setProgressPercent(0, short, scope);
           return;
         }
 
-        if (data.running === false && p >= 100) {
+        var done =
+          data.running === false &&
+          (Number(data.percent) >= 100 || p >= 100);
+        if (done) {
           clearInterval(interval);
-          setProgressPercent(100);
+          setProgressPercent(100, undefined, scope);
           setTimeout(function () {
             window.location.href = "/recommendation/" + id;
           }, 200);
@@ -77,5 +91,5 @@ function pollProgress(id) {
       .catch(function () {
         clearInterval(interval);
       });
-  }, 400);
+  }, 50);
 }
