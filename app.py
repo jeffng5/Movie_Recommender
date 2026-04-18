@@ -249,7 +249,7 @@ def single_movie(id):
 @app.route('/logout')
 def logout():
     """Handle logout of user."""
-    session.pop('user_id')
+    session.clear()
     flash(f'LOGOUT SUCCESSFUL!!')
     return render_template('home.html')
 
